@@ -1,6 +1,5 @@
 -r requirements.txt
 flake8
-IPython[notebook]>=3.0,<4.0
+notebook
 nose
-nosebook
 wheel

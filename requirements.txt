@@ -1,1 +1,1 @@
-PyYAML>=3.0
+pyjade>=4.0.0

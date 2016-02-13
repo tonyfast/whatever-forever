@@ -1,20 +1,6 @@
 import os
 from setuptools import setup
 
-# you'd add this, too, for `python setup.py test` integration
-from setuptools.command.test import test as TestCommand
-
-
-class YAMLMagicTestCommand(TestCommand):
-    def run_tests(self):
-        # Run nose ensuring that argv simulates running nosetests directly
-        import nose
-        nose.run_exit(argv=[
-            "nosetests",
-            "--with-nosebook",
-            "--verbosity=3"
-        ])
-
 
 def read(fname):
     """
@@ -28,17 +14,16 @@ def read(fname):
 
 
 setup(
-    name="yamlmagic",
-    version="0.2.0",
+    name="jademagic",
+    version="0.1.0",
     author="Nicholas Bollweg",
     author_email="nick.bollweg@gmail.com",
-    description="a YAML magic for IPython notebooks",
+    description="a Jade ne Pug magic for IPython notebooks",
     license="BSD",
-    keywords="IPython yaml",
-    url="http://github.com/bollwyvl/yamlmagic",
-    py_modules=["yamlmagic"],
+    keywords="IPython Jade Pug Jupyter",
+    url="http://github.com/bollwyvl/jademagic",
+    py_modules=["jademagic"],
     long_description=read("README.rst"),
-    test_suite="nose.collector",
     classifiers=[
         "Topic :: Utilities",
         "Framework :: IPython",
@@ -51,12 +36,11 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Topic :: Software Development :: Testing",
     ],
-    setup_requires=[
-        "nose",
-        "IPython",
-        "jsonschema",
-        "pyzmq",
-        "PyYAML"
+    install_requires=[
+        "pyjade",
     ],
-    cmdclass={"test": YAMLMagicTestCommand}
+    tests_require=[
+        "nose",
+        "notebook"
+    ]
 )
