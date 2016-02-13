@@ -38,9 +38,5 @@ setup(
     ],
     install_requires=[
         "pyjade",
-    ],
-    tests_require=[
-        "nose",
-        "notebook"
     ]
 )

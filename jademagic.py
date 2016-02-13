@@ -13,7 +13,6 @@ from IPython.core.magic import (
     magics_class,
     cell_magic,
 )
-from IPython.utils.importstring import import_item
 
 import pyjade
 
@@ -45,7 +44,6 @@ class JadeMagics(Magics):
         nargs="?",
         help="""Name of local variable to set to parsed value"""
     )
-
     def jade(self, line, cell):
         line = line.strip()
         args = magic_arguments.parse_argstring(self.jade, line)
