@@ -14,15 +14,15 @@ def read(fname):
 
 
 setup(
-    name="jademagic",
+    name="whatever4e",
     version="0.1.0",
-    author="Nicholas Bollweg",
-    author_email="nick.bollweg@gmail.com",
-    description="a Jade ne Pug magic for IPython notebooks",
+    author="Tony Fast",
+    author_email="tony.fast@gmail.com",
+    description="prototype whatever in the Jupyter notebook",
     license="BSD",
-    keywords="IPython Jade Pug Jupyter",
-    url="http://github.com/bollwyvl/jademagic",
-    py_modules=["jademagic"],
+    keywords="IPython Magic Jupyter",
+    url="http://github.com/tonyfast/whatever-forever",
+    py_modules=["toolz"],
     long_description=read("README.rst"),
     classifiers=[
         "Topic :: Utilities",
@@ -37,6 +37,6 @@ setup(
         "Topic :: Software Development :: Testing",
     ],
     install_requires=[
-        "pyjade",
+        "toolz",
     ]
 )

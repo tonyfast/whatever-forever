@@ -1,11 +1,12 @@
 
-# jademagic
-> an [IPython](http://ipython.org/) [magic](https://ipython.org/ipython-doc/dev/interactive/tutorial.html) for authoring HTML in [Jade ne Pug](https://github.com/pugjs).
+# WhateverForever
+
+> Build simple, powerful jigs for your Jupyter notebook.
 
 ## Install
 From the command line (or with `!` in a notebook cell):
 ```bash
-pip install jademagic
+pip install whatever4e
 ```
 
 ## Enable
@@ -14,25 +15,20 @@ In the notebook, you can use the `%load_ext` or `%reload_ext` line magic.
 
 
 ```python
-%reload_ext jademagic
+from whatever4e import Chain, Whatever
 ```
 
-### Configuration
-In your profile's `ipython_kernel_config.py`, you can add the following line to automatically load `jademagic` into all your running kernels:
-
-```python
-c.InteractiveShellApp.extensions = ['jade_magic']
-```
-
-## Use
-The `%%jade` cell magic will either act as simple parser:
+## Create
+The missing `%%markdown` magic.
 
 
 ```python
-%%jade
-ul
-    each x in [1, 2, 3, 4, 5]
-        li: i.fa.fa-gift(class='fa-#{x}x')
+from jinja2 import Template
+from pandas.util.testing import makeTimeDataFrame
+df = makeTimeDataFrame()
+@Whatever.cell('markdown', lang='markdown')
+def render_template_globals(cell):
+    return Template(cell).render(**globals())
 ```
 
 
@@ -40,60 +36,69 @@ ul
 
 
 
-
-
-
-<ul>
-  <li><i class="fa fa-gift fa-1x"></i>
-  </li>
-  <li><i class="fa fa-gift fa-2x"></i>
-  </li>
-  <li><i class="fa fa-gift fa-3x"></i>
-  </li>
-  <li><i class="fa fa-gift fa-4x"></i>
-  </li>
-  <li><i class="fa fa-gift fa-5x"></i>
-  </li>
-</ul>
-
-
-
-which can be accessed by the special last result variable `_`:
-
-
 ```python
-_
+%%markdown
+# This is markdown
+
+It has syntax highlighting because `lang` is defined.
+
+{{df.head(2).to_html()}}
 ```
 
 
+# This is markdown
 
+It has syntax highlighting because `lang` is defined.
 
-
-<ul>
-  <li><i class="fa fa-gift fa-1x"></i>
-  </li>
-  <li><i class="fa fa-gift fa-2x"></i>
-  </li>
-  <li><i class="fa fa-gift fa-3x"></i>
-  </li>
-  <li><i class="fa fa-gift fa-4x"></i>
-  </li>
-  <li><i class="fa fa-gift fa-5x"></i>
-  </li>
-</ul>
-
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2000-01-03</th>
+      <td>-1.415081</td>
+      <td>0.557416</td>
+      <td>0.328277</td>
+      <td>0.717388</td>
+    </tr>
+    <tr>
+      <th>2000-01-04</th>
+      <td>0.957209</td>
+      <td>-1.081725</td>
+      <td>-0.481776</td>
+      <td>-1.294790</td>
+    </tr>
+  </tbody>
+</table>
 
 
 Or will update a named variable with the parsed document:
 
 
 ```python
-%%jade spock
-i.fa.fa-spock.fa-5x
+from pyjade import process
+Whatever.cell('jade', process, lang='jade', display='HTML')
 ```
 
 
     <IPython.core.display.Javascript object>
+
+
+
+```python
+%%jade spock
+span.badge 10
+```
+
+
+<span class="badge">10</span>
 
 
 
@@ -104,7 +109,7 @@ spock
 
 
 
-    '<i class="fa fa-spock fa-5x"></i>'
+    '<span class="badge">10</span>'
 
 
 
@@ -112,7 +117,7 @@ spock
 [Issues](https://github.com/bollwyvl/jademagic/issues) and [pull requests](https://github.com/bollwyvl/jademagic/pulls) welcome!
 
 ## License
-`jademagic` is released as free software under the [BSD 3-Clause license](./LICENSE).
+`whatever4e` is released as free software under the [BSD 3-Clause license](./LICENSE).
 
 ## Thank
 - [@lbustelo](http://github.com/lbustelo) for challenging me to an alternative to `%%html`
