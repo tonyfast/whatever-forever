@@ -15,14 +15,14 @@ def read(fname):
 
 setup(
     name="whatever4e",
-    version="0.1.0",
+    version="0.2.0",
     author="Tony Fast",
     author_email="tony.fast@gmail.com",
     description="prototype whatever in the Jupyter notebook",
     license="BSD",
     keywords="IPython Magic Jupyter",
     url="http://github.com/tonyfast/whatever-forever",
-    py_modules=["toolz"],
+    py_modules=["whatever4e"],
     long_description=read("README.rst"),
     classifiers=[
         "Topic :: Utilities",

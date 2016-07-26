@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[4]:
+# In[10]:
 
 from IPython import display, get_ipython
 from IPython.core import magic_arguments
@@ -15,7 +15,7 @@ import toolz.curried
 from toolz.curried import *
 from typing import Callable
 
-__version_info__ = (0, 1, 0)
+__version_info__ = (0, 2, 0)
 __version__ = '.'.join(map(str, __version_info__))
 
 
@@ -202,14 +202,4 @@ class Chain(object):
         if args or kwargs:
             return self.f(*args, **kwargs)
         return self.f(self.context)
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
 

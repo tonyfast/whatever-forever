@@ -31,6 +31,10 @@ def render_template_globals(cell):
     return Template(cell).render(**globals())
 ```
 
+    /Users/tfast/anaconda/lib/python3.5/site-packages/pytz/__init__.py:29: UserWarning: Module toolz was already imported from /Users/tfast/anaconda/lib/python3.5/site-packages/toolz/__init__.py, but /Users/tfast/w4e is being added to sys.path
+      from pkg_resources import resource_stream
+
+
 
     <IPython.core.display.Javascript object>
 
@@ -63,17 +67,17 @@ It has syntax highlighting because `lang` is defined.
   <tbody>
     <tr>
       <th>2000-01-03</th>
-      <td>-1.415081</td>
-      <td>0.557416</td>
-      <td>0.328277</td>
-      <td>0.717388</td>
+      <td>-1.659650</td>
+      <td>-0.370966</td>
+      <td>0.026096</td>
+      <td>2.450970</td>
     </tr>
     <tr>
       <th>2000-01-04</th>
-      <td>0.957209</td>
-      <td>-1.081725</td>
-      <td>-0.481776</td>
-      <td>-1.294790</td>
+      <td>-1.754256</td>
+      <td>0.846297</td>
+      <td>0.196810</td>
+      <td>0.231307</td>
     </tr>
   </tbody>
 </table>
@@ -89,6 +93,13 @@ Whatever.cell('jade', process, lang='jade', display='HTML')
 
 
     <IPython.core.display.Javascript object>
+
+
+
+
+
+    <whatever4e.Whatever at 0x11593c588>
+
 
 
 
