@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[14]:
+# In[29]:
 
 from IPython import display, get_ipython
 from IPython.core import magic_arguments
@@ -13,7 +13,7 @@ from IPython.core.magic import (
 from toolz.curried import *
 
 
-# In[15]:
+# In[81]:
 
 @magics_class
 class Whatever(Magics):
@@ -43,45 +43,14 @@ class Whatever(Magics):
         
 
 
-# In[16]:
+# In[82]:
 
-new_method = lambda x: partial(setattr, Whatever, x)
-
-
-# In[17]:
-
-@new_method('line')
-@classmethod
-def line(cls, name, f, display='HTML'):
-    return partial(cls, name, magic_kind='line', display=display)(f)
-        
+new_method = lambda x: setattr(Whatever, x.__name__, classmethod(x))
 
 
-# In[18]:
+# In[102]:
 
-@new_method('cell')
-@classmethod
-@curry
-def cell(cls, name, f, **kwargs):
-    return partial(cls, name, **kwargs)(f)
-
-
-# In[19]:
-
-@new_method('display')
-@classmethod
-def display(cls, disp, val):
-    if disp:
-        if isinstance(disp, str):
-            return display.display(getattr(display, disp)(val))
-        elif isinstance(disp, Callable):
-            return display.display(disp(val))
-
-
-# In[20]:
-
-@new_method('forever')
-@classmethod
+@new_method
 @line_cell_magic
 @magic_arguments.magic_arguments()
 @magic_arguments.argument(
@@ -99,23 +68,46 @@ def display(cls, disp, val):
 @magic_arguments.argument(
     "-d",
     "--display",
-    default="Markdown",
+    default=-1,
     nargs="?",
     help="""An IPython.display method."""
 )
-def forever(cls, line, cell="""""", f=identity, **kwargs):
+def forever(cls, line, cell="""""", f=identity, display=None):
     args = magic_arguments.parse_argstring(cls.forever, line.strip())
     if not cell:
         cell = pipe(args.code, lambda x: eval(x, get_ipython().user_ns))
-
+    
+    if args.display != -1:
+        display = args.display
+    
     val = f(cell)
-
-    for key, value in kwargs.items():
-        if hasattr(args, key):
-            setattr(args, key, value)        
-
     if bool(args.name):
         get_ipython().user_ns[args.name] = val
 
-    return cls.display(args.display, val)
+    return cls.show(display, val)
+
+
+# In[1]:
+
+@new_method
+def line(cls, name, f, display='HTML', lang=None):
+    return partial(cls, name, magic_kind='line', display=display, lang=lang)(f)        
+
+
+# In[2]:
+
+@new_method
+def cell(cls, name, f, display='Markdown', lang=None):
+    return partial(cls, name, display=display, lang=lang)(f)
+
+
+# In[105]:
+
+@new_method
+def show(cls, disp, val):
+    if disp:
+        if isinstance(disp, str):
+            return display.display(getattr(display, disp)(val))
+        elif isinstance(disp, Callable):
+            return display.display(disp(val))
 
