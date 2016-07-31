@@ -23,7 +23,7 @@ setup(
     keywords="IPython Magic Jupyter",
     url="http://github.com/tonyfast/whatever-forever",
     py_modules=["whatever4e"],
-    long_description=read("README.md"),
+    long_description=read("README.rst"),
     classifiers=[
         "Topic :: Utilities",
         "Framework :: IPython",
