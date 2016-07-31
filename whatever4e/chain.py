@@ -19,9 +19,8 @@
 
 # The only required import is `toolz` from pypi
 
-# In[89]:
+# In[103]:
 
-from .class_maker import method
 import builtins
 import toolz.curried
 from toolz.curried import *
