@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[59]:
 
 from .class_maker import method
 
@@ -15,7 +15,7 @@ from IPython.core.magic import (
 from toolz.curried import *
 
 
-# In[44]:
+# In[60]:
 
 @magics_class
 class Whatever(Magics):
@@ -56,12 +56,12 @@ class Whatever(Magics):
         
 
 
-# In[45]:
+# In[61]:
 
-new_method = method(Whatever)
+new_method = method(Whatever, decorators=[classmethod])
 
 
-# In[46]:
+# In[55]:
 
 @new_method
 @line_cell_magic
@@ -100,23 +100,23 @@ def forever(cls, line, cell="""""", f=identity, display=None):
     return cls.show(display, val)
 
 
-# In[47]:
+# In[56]:
 
-@new_method(decorators=[classmethod])
+@new_method
 def line(cls, name, f, display='HTML', lang=None):
     return partial(cls, name, magic_kind='line', display=display, lang=lang)(f)        
 
 
-# In[48]:
+# In[57]:
 
-@new_method(decorators=[classmethod])
+@new_method
 def cell(cls, name, f, display='Markdown', lang=None):
     return partial(cls, name, display=display, lang=lang)(f)
 
 
-# In[49]:
+# In[58]:
 
-@new_method(decorators=[classmethod])
+@new_method
 def show(cls, disp, val):
     if disp:
         if isinstance(disp, str):
