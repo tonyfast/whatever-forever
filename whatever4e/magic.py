@@ -124,13 +124,3 @@ def show(cls, disp, val):
         elif isinstance(disp, Callable):
             return display.display(disp(val))
 
-
-# In[53]:
-
-Whatever()
-
-
-# In[51]:
-
-get_ipython().run_cell_magic('markdown', '', '# Testing')
-
