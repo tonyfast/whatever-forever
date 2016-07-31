@@ -21,7 +21,7 @@
 
 # In[89]:
 
-from class_maker import method
+from .class_maker import method
 import builtins
 import toolz.curried
 from toolz.curried import *

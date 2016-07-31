@@ -73,7 +73,7 @@ __version__ = '.'.join(map(str, __version_info__))
 
 from .chain import Chain
 from .magic import Whatever
-from class_maker import method
+from .class_maker import method
 
 __all__ = [
     'Whatever', 'Chain', 'method',

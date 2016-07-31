@@ -3,7 +3,7 @@
 
 # In[17]:
 
-from class_maker import method
+from .class_maker import method
 from IPython import display, get_ipython
 from IPython.core import magic_arguments
 from IPython.core.magic import (
