@@ -1,8 +1,9 @@
 
 # coding: utf-8
 
-# In[29]:
+# In[17]:
 
+from class_maker import method
 from IPython import display, get_ipython
 from IPython.core import magic_arguments
 from IPython.core.magic import (
@@ -13,7 +14,7 @@ from IPython.core.magic import (
 from toolz.curried import *
 
 
-# In[81]:
+# In[18]:
 
 @magics_class
 class Whatever(Magics):
@@ -43,12 +44,12 @@ class Whatever(Magics):
         
 
 
-# In[82]:
+# In[19]:
 
-new_method = lambda x: setattr(Whatever, x.__name__, classmethod(x))
+new_method = add_method(Whatever)
 
 
-# In[102]:
+# In[20]:
 
 @new_method
 @line_cell_magic
@@ -87,21 +88,21 @@ def forever(cls, line, cell="""""", f=identity, display=None):
     return cls.show(display, val)
 
 
-# In[1]:
+# In[21]:
 
 @new_method
 def line(cls, name, f, display='HTML', lang=None):
     return partial(cls, name, magic_kind='line', display=display, lang=lang)(f)        
 
 
-# In[2]:
+# In[22]:
 
 @new_method
 def cell(cls, name, f, display='Markdown', lang=None):
     return partial(cls, name, display=display, lang=lang)(f)
 
 
-# In[105]:
+# In[23]:
 
 @new_method
 def show(cls, disp, val):
@@ -110,4 +111,17 @@ def show(cls, disp, val):
             return display.display(getattr(display, disp)(val))
         elif isinstance(disp, Callable):
             return display.display(disp(val))
+
+
+# In[24]:
+
+w = Whatever('test', identity,)
+
+
+# In[27]:
+
+@staticmethod
+@new_method
+def test(cls, i=1):
+    return i
 

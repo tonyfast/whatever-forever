@@ -19,8 +19,9 @@
 
 # The only required import is `toolz` from pypi
 
-# In[1]:
+# In[89]:
 
+from class_maker import method
 import builtins
 import toolz.curried
 from toolz.curried import *
@@ -42,12 +43,12 @@ class Chain(object):
     ]
 
 
-# In[63]:
+# In[90]:
 
-new_method = lambda x: setattr(Chain, x.__name__, x)
+new_method = method(Chain)
 
 
-# In[64]:
+# In[91]:
 
 @new_method
 def _getter(self, key):
@@ -64,7 +65,7 @@ def _getter(self, key):
     )
 
 
-# In[65]:
+# In[92]:
 
 @new_method
 def __init__(
@@ -88,7 +89,7 @@ def __init__(
 # > Method to compose a function from the tokens that 
 # have been created in the chain
 
-# In[67]:
+# In[93]:
 
 @new_method
 def _compose(self):
@@ -108,7 +109,7 @@ def _compose(self):
 # > `value` composes the function and then evaluate it with either 
 # the default context or a new set of arguments to evaluate with the same composition.
 
-# In[68]:
+# In[94]:
 
 @new_method
 def value(self, *args, **kwargs):
@@ -129,7 +130,7 @@ def value(self, *args, **kwargs):
 
 # > Bah, the attribute is just a string.  What function does that refer to in the imports?
 
-# In[69]:
+# In[95]:
 
 @new_method
 def __getattr__(self, attr):
@@ -139,7 +140,7 @@ def __getattr__(self, attr):
 
 # > A mighty flexible way to append any function the chain.
 
-# In[70]:
+# In[96]:
 
 @new_method
 def __getitem__(self, item):
@@ -150,7 +151,7 @@ def __getitem__(self, item):
 # > `__call__` does not execute anything it just records args 
 # and kwargs that would be passed to the function.
 
-# In[71]:
+# In[97]:
 
 @new_method
 def __call__(self, *args, **kwargs):
@@ -164,7 +165,7 @@ def __call__(self, *args, **kwargs):
 # > If a `Chain` is printed, and it is `eager` (by default) then the composition
 # will be executed if there is a context.
 
-# In[79]:
+# In[98]:
 
 @new_method
 def __repr__(self):
@@ -173,7 +174,7 @@ def __repr__(self):
 
 # > Copy the state of the chain and return a new one.
 
-# In[80]:
+# In[99]:
 
 @new_method
 def copy(self):
@@ -189,7 +190,7 @@ def copy(self):
 # 
 # > `__or__` is shorthand for a copy and a an append.
 
-# In[81]:
+# In[100]:
 
 @new_method
 def __or__(self, f):
@@ -200,9 +201,14 @@ def __or__(self, f):
 
 # > `__gt__` is shorthand for a copy, append, and a `value` operation.
 
-# In[86]:
+# In[101]:
 
 @new_method
 def __gt__(self, f):
     return self.copy()[f].value()
+
+
+# In[ ]:
+
+
 
