@@ -17,5 +17,7 @@ def method(
     name, fn = f.__name__, f
     if not isclass(class_or_instance):
         fn = MethodType(fn, class_or_instance)
+    for decorator in decorators:
+        fn = decorator(fn)
     setattr(class_or_instance, name, fn)
-    return getattr(class_or_instance, name)
+    return f

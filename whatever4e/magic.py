@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[17]:
+# In[1]:
 
 from .class_maker import method
 
@@ -15,14 +15,25 @@ from IPython.core.magic import (
 from toolz.curried import *
 
 
-# In[18]:
+# In[44]:
 
 @magics_class
 class Whatever(Magics):
-    def __init__(self, name, f, magic_kind='cell', lang=None, **kwargs):
+    def __init__(
+            self, 
+            name='markdown', 
+            f=identity, 
+            magic_kind='cell', 
+            lang=None, 
+**kwargs
+        ):
         """Initialize a new [cell/line] magic.  The executes f on the [cell/line] body.
         """
         self.name = name
+        if name == 'markdown': 
+            lang = name
+            kwargs['display'] = 'Markdown'
+            
         self.f = f
         if lang:
             pipe("""require([
@@ -45,12 +56,12 @@ class Whatever(Magics):
         
 
 
-# In[19]:
+# In[45]:
 
 new_method = method(Whatever)
 
 
-# In[28]:
+# In[46]:
 
 @new_method
 @line_cell_magic
@@ -89,30 +100,37 @@ def forever(cls, line, cell="""""", f=identity, display=None):
     return cls.show(display, val)
 
 
-# In[31]:
+# In[47]:
 
-@classmethod
-@new_method
+@new_method(decorators=[classmethod])
 def line(cls, name, f, display='HTML', lang=None):
     return partial(cls, name, magic_kind='line', display=display, lang=lang)(f)        
 
 
-# In[22]:
+# In[48]:
 
-@classmethod
-@new_method
+@new_method(decorators=[classmethod])
 def cell(cls, name, f, display='Markdown', lang=None):
     return partial(cls, name, display=display, lang=lang)(f)
 
 
-# In[32]:
+# In[49]:
 
-@classmethod
-@new_method
+@new_method(decorators=[classmethod])
 def show(cls, disp, val):
     if disp:
         if isinstance(disp, str):
             return display.display(getattr(display, disp)(val))
         elif isinstance(disp, Callable):
             return display.display(disp(val))
+
+
+# In[53]:
+
+Whatever()
+
+
+# In[51]:
+
+get_ipython().run_cell_magic('markdown', '', '# Testing')
 
