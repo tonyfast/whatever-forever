@@ -43,39 +43,25 @@
 #     return Template(cell).render(**globals())
 # ```
 
-# ## `method`
-# 
-# A decorator for modifying classes and instances.
-# 
-# ```python
-# class Foo:
-#     pass
-# 
-# @method(Foo)
-# def Bar(self, i=1):
-#     return i*2
-# 
-# f = Foo()
-# 
-# @method(f)
-# def Bar(self, i=1):
-#     return i*3
-# ```
-
 # ## License
 # `whatever4e` is released as free software under the [BSD 3-Clause license]
 # (https://github.com/tonyfast/whatever-forever/blob/master/LICENSE).
 
 # In[ ]:
 
-__version_info__ = (0, 3, 0)
+__version_info__ = (0, 0, 5)
 __version__ = '.'.join(map(str, __version_info__))
 
 from .chain import Chain
-from .magic import Whatever
+from .magic import Forever
 from .class_maker import method
 
 __all__ = [
-    'Whatever', 'Chain', 'method',
+    'Forever', 'Chain', 'method',
 ]
+
+
+# In[ ]:
+
+
 

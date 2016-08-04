@@ -1,9 +1,7 @@
 
 # coding: utf-8
 
-# In[59]:
-
-from .class_maker import method
+# In[2]:
 
 from IPython import display, get_ipython
 from IPython.core import magic_arguments
@@ -12,30 +10,71 @@ from IPython.core.magic import (
     magics_class,
     line_cell_magic,
 )
+from typing import Callable
 from toolz.curried import *
 
 
-# In[60]:
+# > Evaluate arbitrary variables that can be added to the global context by defining a name.
 
-@magics_class
-class Whatever(Magics):
-    def __init__(
-            self, 
-            name='markdown', 
-            f=identity, 
-            magic_kind='cell', 
-            lang=None, 
-**kwargs
-        ):
-        """Initialize a new [cell/line] magic.  The executes f on the [cell/line] body.
-        """
-        self.name = name
-        if name == 'markdown': 
-            lang = name
-            kwargs['display'] = 'Markdown'
-            
-        self.f = f
+# In[3]:
+
+@magic_arguments.magic_arguments()
+@magic_arguments.argument(
+    "name",
+    default=None,
+    nargs="?",
+    help="""Name of local variable to set to parsed value""",
+)
+@magic_arguments.argument(
+    "-d",
+    "--display",
+    default='Markdown',
+    nargs="?",
+    help="""An IPython.display method."""
+)
+def magical_cell(line, cell, f=identity, **kwargs):
+    args = magic_arguments.parse_argstring(magical_cell, line.strip())
+    for key, value in kwargs.items():
+        # Set the values if they are not args
+        if not getattr(args, key) or (key in 'display' and args.display=='Markdown'):
+            setattr(args, key, value)
+    retval = f(cell)
+    
+    if args.name:
+        if '.' in args.name:
+            path = args.name.split('.')
+            var = get_ipython().user_ns[path[0]]
+            setattr( reduce(
+                lambda x, y: getattr(x,y),
+                path[1:-1], 
+                var
+            ), path[-1], retval)
+        else:   
+            get_ipython().user_ns[args.name] = retval
+    
+    if args.display:
+        if isinstance(args.display, str):
+            return display.display(getattr(display, args.display)(retval))
+        elif isinstance(args.display, Callable):
+            return args.display(retval)
+
+
+# In[4]:
+
+class magical():
+    def __init__(self, magic_kind=magical_cell):
+        self._magic_kind = magic_kind
+    
+    @curry
+    def __call__(self, key, f, lang=None, **kwargs):
+        name = self._magic_kind.__name__.split('_')[1]
+        get_ipython().register_magic_function(
+            partial(self._magic_kind, f=f, **kwargs),
+            magic_kind = name,
+            magic_name = key,
+        )
         if lang:
+            # Syntax highlighting
             pipe("""require([
                         "notebook/js/codecell",
                         "codemirror/mode/{0}/{0}"
@@ -49,78 +88,25 @@ class Whatever(Magics):
                 """.format(lang, name), 
                  display.Javascript, display.display,
             )
-        get_ipython().register_magic_function(
-            partial(self.forever, f=f, **kwargs),
-            magic_kind=magic_kind, magic_name=name,
-        )
-        
 
 
-# In[61]:
+# > Still don't know how I will use this.
 
-new_method = method(Whatever, decorators=[classmethod])
+# In[5]:
 
-
-# In[55]:
-
-@new_method
-@line_cell_magic
-@magic_arguments.magic_arguments()
-@magic_arguments.argument(
-    "name",
-    default=None,
-    nargs="?",
-    help="""Name of local variable to set to parsed value""",
-)
-@magic_arguments.argument(
-    "-c",
-    "--code",
-    default="",
-    help="""Some code to run.""",
-)
-@magic_arguments.argument(
-    "-d",
-    "--display",
-    default=-1,
-    nargs="?",
-    help="""An IPython.display method."""
-)
-def forever(cls, line, cell="""""", f=identity, display=None):
-    args = magic_arguments.parse_argstring(cls.forever, line.strip())
-    if not cell:
-        cell = pipe(args.code, lambda x: eval(x, get_ipython().user_ns))
-    
-    if args.display != -1:
-        display = args.display
-    
-    val = f(cell)
-    if bool(args.name):
-        get_ipython().user_ns[args.name] = val
-
-    return cls.show(display, val)
+def magical_line(line, f=identity, **kwargs):    
+    """I don't understand how I would use this yet."""
+    if 'assign' in kwargs:
+        if kwargs['assign']:
+            line, cell = line.strip().split(' ',1)
+    else:
+        line, cell = ['', line]
+    return magical_cell(line, cell, f, **kwargs)
 
 
-# In[56]:
+# In[6]:
 
-@new_method
-def line(cls, name, f, display='HTML', lang=None):
-    return partial(cls, name, magic_kind='line', display=display, lang=lang)(f)        
-
-
-# In[57]:
-
-@new_method
-def cell(cls, name, f, display='Markdown', lang=None):
-    return partial(cls, name, display=display, lang=lang)(f)
-
-
-# In[58]:
-
-@new_method
-def show(cls, disp, val):
-    if disp:
-        if isinstance(disp, str):
-            return display.display(getattr(display, disp)(val))
-        elif isinstance(disp, Callable):
-            return display.display(disp(val))
+class Forever(object):
+    cell = staticmethod(magical(magical_cell))
+    line = staticmethod(magical(magical_line))
 

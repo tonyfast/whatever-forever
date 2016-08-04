@@ -47,26 +47,6 @@ Create a ``jinja`` to Markdown magic.
     def render_jinja_with_globals(cell):
         return Template(cell).render(**globals())
 
-``method``
-----------
-
-A decorator for modifying classes and instances.
-
-.. code:: python
-
-    class Foo:
-        pass
-
-    @method(Foo)
-    def Bar(self, i=1):
-        return i*2
-
-    f = Foo()
-
-    @method(f)
-    def Bar(self, i=1):
-        return i*3
-
 License
 -------
 
@@ -76,13 +56,14 @@ license]
 
 .. code:: python
 
-    __version_info__ = (0, 3, 0)
+    __version_info__ = (0, 0, 5)
     __version__ = '.'.join(map(str, __version_info__))
     
     from .chain import Chain
-    from .magic import Whatever
+    from .magic import Forever
     from class_maker import method
     
     __all__ = [
-        'Whatever', 'Chain', 'method',
+        'Forever', 'Chain', 'method',
     ]
+
