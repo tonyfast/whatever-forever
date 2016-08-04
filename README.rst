@@ -42,8 +42,9 @@ Create a ``jinja`` to Markdown magic.
 
 .. code:: python
 
+    from whatever4e import Forever
     from jinja2 import Template
-    @Whatever.cell('jinja2', lang='jinja2', display='Markdown')
+    @Forever.cell('jinja2', lang='jinja2', display='Markdown')
     def render_jinja_with_globals(cell):
         return Template(cell).render(**globals())
 
