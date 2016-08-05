@@ -15,7 +15,7 @@ def read(fname):
 
 setup(
     name="whatever-forever",
-    version="0.0.5",
+    version="0.0.7",
     author="Tony Fast",
     author_email="tony.fast@gmail.com",
     description="prototype whatever in the Jupyter notebook",

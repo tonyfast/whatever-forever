@@ -16,7 +16,7 @@ from toolz.curried import *
 
 # > Evaluate arbitrary variables that can be added to the global context by defining a name.
 
-# In[3]:
+# In[21]:
 
 @magic_arguments.magic_arguments()
 @magic_arguments.argument(
@@ -34,10 +34,7 @@ from toolz.curried import *
 )
 def magical_cell(line, cell, f=identity, **kwargs):
     args = magic_arguments.parse_argstring(magical_cell, line.strip())
-    for key, value in kwargs.items():
-        # Set the values if they are not args
-        if not getattr(args, key) or (key in 'display' and args.display=='Markdown'):
-            setattr(args, key, value)
+
     retval = f(cell)
     
     if args.name:
@@ -52,11 +49,13 @@ def magical_cell(line, cell, f=identity, **kwargs):
         else:   
             get_ipython().user_ns[args.name] = retval
     
+    
     if args.display:
-        if isinstance(args.display, str):
-            return display.display(getattr(display, args.display)(retval))
-        elif isinstance(args.display, Callable):
-            return args.display(retval)
+        disp = kwargs['display'] if 'display' in kwargs else args.display
+        if isinstance(disp, str):
+            return display.display(getattr(display, disp)(retval))
+        elif isinstance(disp, Callable):
+            return disp(retval)
 
 
 # In[4]:

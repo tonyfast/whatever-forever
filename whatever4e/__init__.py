@@ -37,8 +37,9 @@
 # Create a `jinja` to Markdown magic.
 # 
 # ```python
+# from whatever4e import Forever
 # from jinja2 import Template
-# @Whatever.cell('jinja2', lang='jinja2', display='Markdown')
+# @Forever.cell('jinja2', lang='jinja2', display='Markdown')
 # def render_jinja_with_globals(cell):
 #     return Template(cell).render(**globals())
 # ```
@@ -49,7 +50,7 @@
 
 # In[ ]:
 
-__version_info__ = (0, 0, 5)
+__version_info__ = (0, 0, 7)
 __version__ = '.'.join(map(str, __version_info__))
 
 from .chain import Chain
