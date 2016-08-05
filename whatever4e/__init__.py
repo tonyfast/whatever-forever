@@ -61,8 +61,3 @@ __all__ = [
     'Forever', 'Chain', 'method',
 ]
 
-
-# In[ ]:
-
-
-

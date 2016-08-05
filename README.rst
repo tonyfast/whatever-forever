@@ -67,4 +67,3 @@ license]
     __all__ = [
         'Forever', 'Chain', 'method',
     ]
-
