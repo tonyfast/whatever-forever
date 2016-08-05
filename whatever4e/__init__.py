@@ -55,14 +55,9 @@ __version__ = '.'.join(map(str, __version_info__))
 
 from .chain import Chain
 from .magic import Forever
-from .class_maker import method
+from class_maker import method
 
 __all__ = [
     'Forever', 'Chain', 'method',
 ]
-
-
-# In[ ]:
-
-
 

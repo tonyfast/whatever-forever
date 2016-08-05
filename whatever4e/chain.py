@@ -22,7 +22,7 @@
 
 # In[1]:
 
-from .class_maker import method
+from class_maker import method
 import builtins
 import toolz.curried
 from toolz.curried import *
@@ -82,7 +82,7 @@ def _compose(self):
                     e[0], *e[1], **e[2]
                 ) if e[1] or e[2] else e[0],
             )
-        ),
+        )
     )
 
 
