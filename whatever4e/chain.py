@@ -20,25 +20,26 @@
 
 # The only required import is `toolz` from pypi
 
-# In[1]:
+# In[5]:
 
 from .class_maker import method
 import builtins
+import operator
 import toolz.curried
 from toolz.curried import *
 from types import MethodType
 from typing import Callable
 
 
-# In[10]:
+# In[6]:
 
 class Chain(object): 
-    _imports = [toolz.curried, builtins]
+    _imports = [toolz.curried, operator, builtins]
     
 new_method = method(Chain)
 
 
-# In[17]:
+# In[7]:
 
 @new_method
 def __init__(
@@ -67,29 +68,31 @@ def __init__(
 # > Method to compose a function from the tokens that 
 # have been created in the chain
 
-# In[18]:
+# In[37]:
 
 @new_method
 def _compose(self):
-    """From the tokens, compose a function that can be reused.
+    """Compose a function that can be reusable function from the tokens.
     """
-    return compose(
-        *pipe(
-            self._tokens if self._tokens else [[identity, [], {}]],
-            reversed,
-            map(
-                lambda e: partial(
-                    e[0], *e[1], **e[2]
-                ) if e[1] or e[2] else e[0],
+    if self._tokens:
+        return compose(
+            *pipe(
+                self._tokens,
+                reversed,
+                map(
+                    lambda e: partial(
+                        e[0], *e[1], **e[2]
+                    ) if e[1] or e[2] else e[0],
+                )
             )
         )
-    )
+    return identity
 
 
 # > `value` composes the function and then evaluate it with either 
 # the default context or a new set of arguments to evaluate with the same composition.
 
-# In[19]:
+# In[38]:
 
 @new_method
 def value(self, *args, **kwargs):
@@ -101,26 +104,30 @@ def value(self, *args, **kwargs):
         return fn(*args, **kwargs)
     if self._kwargs: 
         return fn(*self._args, **self._kwargs)
-    return fn(*self._args)
+    if self._args:
+        return fn(*self._args)
+    return self._tokens
 
 
 # > `__call__` does not execute anything it just records args 
 # and kwargs that would be passed to the function.
 
-# In[24]:
+# In[39]:
 
 @new_method
 def __call__(self, *args, **kwargs):
+    """Add args and kwargs to the tokens.
+    """
     self._tokens[-1][1] = args
     self._tokens[-1][2] = kwargs
     return self
 
 
-# In[25]:
+# In[40]:
 
 @new_method
 def _getter(self, attr):
-    """Extract a function from the imports based on a name.
+    """Choose a function from the imports based on a named id.
     """
     return pipe(self._imports, filter(lambda x: x.__name__ == attr), first)
 
@@ -129,7 +136,7 @@ def _getter(self, attr):
 # Chain([1,2,3,4]).reversed().str()
 # ```
 
-# In[30]:
+# In[41]:
 
 @new_method
 def __getattr__(self, attr):
@@ -145,47 +152,70 @@ def __getattr__(self, attr):
 # Chain([1,2,3,4])[reversed][str]
 # ```
 
-# In[127]:
+# In[42]:
 
 @new_method
 def __getitem__(self, item):
+    """Any function in the itme can be tokenized.
+    """
     self._tokens.append([item, (), {}])
     return self
 
 
-# > A `Chain` is a `Chain` until `value` or `|`.  
+# > A `Chain` is a `Chain` until `value` or `>`.  
 
-# > Evaluate when the repr is called.
+# > Evaluate when the repr is called.  Make sure to add a `;` to suppress output if necessary
 
-# In[129]:
+# In[106]:
 
 @new_method
 def __repr__(self):
-    return self.value().__str__()
+    return self.value().__repr__()
+
+
+# ```
+# XXXXXXXXXXXXXXXXXXXXXXXXXX
+# XXXXXXXChainXXXXXLinkXXXXX
+# XXXXXShorthandXXXXXXXXXXXX
+# XXXXXXXXXXXXXXXXXXXXXXXXXX
+# ```
+
+# In[107]:
+
+class _X(Chain):
+    """Shorthand for `Chain` where `_X.f is Chain.value`.  Typographically dense.
+    """
+    @property
+    def f(self): return self.value
 
 
 # > Copy the state of the chain and return a new one.
 
-# In[130]:
+# In[108]:
 
 @new_method
 def copy(self):
-    chain = Chain(*self._args, **self._kwargs)
+    """Create a new instance of the current chain.  Used for 
+    """
+    chain = self.__class__(*self._args, **self._kwargs)
     chain._imports = self._imports[:]
     chain._tokens = self._tokens[:]
     return chain   
 
 
-# > Some sweet ol' syntactic sugar that looks like functional programming.
+# ##### Some sweet ol' syntactic sugar that looks like functional programming.
 # 
-# > `__or__` adds a piping method to a chain.  Any functional can be included in the pipe.
+# > `__or__`
 # 
-# > `__or__` is shorthand for a copy and a an append.
+# >   * adds a piping method to a chain.  Any functional can be included in the pipe.
+# >   * is shorthand for a copy and a an append.
 
-# In[31]:
+# In[109]:
 
 @new_method
 def __or__(self, f):
+    """Extend the current chain.
+    """
     chain = self.copy()
     chain._tokens.append([f, [], {}])
     return chain
@@ -193,11 +223,31 @@ def __or__(self, f):
 
 # > `__gt__` is shorthand for a copy, append, and a `value` operation.
 
-# In[132]:
+# In[110]:
 
 @new_method
 def __gt__(self, f):
-    return self.copy()[f].value()
+    """Extend and evaluate the chain.
+    """
+    return self.__or__(f).value()
+
+
+# In[111]:
+
+class this(_X):
+    def __getitem__(self, item):
+        self._tokens.append([lambda x: x[item], [], {}])
+        return self
+    def __getattr__(self, item):
+        self._tokens.append([lambda x: getattr(x, item), [], {}])
+        return self
+    def __call__(self, *args, **kwargs):
+        if self._tokens:
+            self._tokens[-1][0] = compose(
+                lambda x: x(*args, **kwargs),
+                self._tokens[-1][0],
+            )
+        return self
 
 
 # # About the design
@@ -266,7 +316,9 @@ def __gt__(self, f):
 #     
 #     __evaluate a chain__ `Chain([1,2,3]) | map(lambda x: x**2) > list`
 
-# In[ ]:
+# In[112]:
 
-
+# import pandas as pd
+# from IPython import display
+# this(pd.util.testing.makeDataFrame()).set_index('B')[['A']].to_html() > display.HTML
 

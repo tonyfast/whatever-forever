@@ -57,13 +57,13 @@ license]
 
 .. code:: python
 
-    __version_info__ = (0, 0, 9)
+    __version_info__ = (0, 0, 10)
     __version__ = '.'.join(map(str, __version_info__))
     
-    from .chain import Chain
+    from .chain import Chain, this, _X
     from .magic import Forever
     from class_maker import method
     
     __all__ = [
-        'Forever', 'Chain', 'method',
+        'Forever', 'Chain', 'method', 'this', '_X',
     ]
