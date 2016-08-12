@@ -22,7 +22,7 @@ Chainable Values
 Syntactic Sugar
 ~~~~~~~~~~~~~~~
 
-``\`` & ``>`` offer chain new functions and evaluate them respectively.
+``|`` & ``>`` offer chain new functions and evaluate them respectively.
 
 .. code:: python
 
