@@ -48,16 +48,24 @@
 # `whatever4e` is released as free software under the [BSD 3-Clause license]
 # (https://github.com/tonyfast/whatever-forever/blob/master/LICENSE).
 
+# > Add toolz.curried to global imports because I keep using it.
+
 # In[ ]:
 
-__version_info__ = (0, 0, 10)
+__version_info__ = (0, 0, 11)
 __version__ = '.'.join(map(str, __version_info__))
 
 from .chain import Chain, this, _X
 from .magic import Forever
 from .class_maker import method
+from toolz.curried import *
+import toolz.curried
 
 __all__ = [
-    'Forever', 'Chain', 'method', 'this', '_X',
+    'Forever', 'Chain', 'method', 'this', '_X', *pipe(
+        toolz.curried, dir, filter(
+            complement(lambda s: s.startswith('_'))
+        ), list
+    )
 ]
 

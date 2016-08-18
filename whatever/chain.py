@@ -20,126 +20,122 @@
 
 # The only required import is `toolz` from pypi
 
-# In[5]:
+# In[6]:
 
 from .class_maker import method
 import builtins
 import operator
 import toolz.curried
-from toolz.curried import *
-from types import MethodType
-from typing import Callable
+from toolz.curried import (
+    compose, filter, first, juxt, map, partial, pipe, concat, complement
+)
+from typing import Any, Callable, Iterable
+
+__all__ = ['Chain', '_X', 'this',]
 
 
-# In[6]:
+# In[7]:
 
 class Chain(object): 
     _imports = [toolz.curried, operator, builtins]
     
+    # compose goes here because it is in the namespace already
+    @property
+    def compose(self)->Callable:
+        return self._composer(self._tokens)
+    
 new_method = method(Chain)
 
 
-# In[7]:
+# ```python
+# Chain([1,2]).map(lambda x: x**2).list().value()
+# ```
+
+# In[8]:
+
+def module_methods(module)->list: 
+    return pipe(module, dir, filter(
+            lambda x: not x.startswith('_')
+        ), map(
+            partial(getattr, module)
+        ), list)
+
+
+# In[9]:
+
+def composer(tokens)->Callable: 
+    return compose(*pipe(tokens, reversed, filter(
+            compose(bool, first,)
+        ), map(
+            lambda t: partial(t[0], *t[1], **t[2]) if t[1] or t[2] else t[0]
+        ), list))
+
+
+# In[10]:
 
 @new_method
 def __init__(
     self,
     *args, **kwargs
-):
-    # A function to extract attributes from a module.
-    module_methods = lambda module: pipe(module, dir, filter(
-            lambda x: not x.startswith('_')
-        ), map(
-            partial(getattr, module)
-        ), list)
-    
-    # Create a list of attributes that can be added to chain
-    # It would be cool to have some code prediction.
-    self._imports = pipe(self._imports, map(module_methods), concat, filter(lambda x: hasattr(x,'__name__')),list)
+):  
+    # An object with aliases to functions.
+    self._getter = pipe(
+        self._imports, reversed, map(module_methods), 
+        concat, filter(lambda x: hasattr(x,'__name__')), 
+        map(lambda x: (x.__name__, x)), list, dict
+    ).get
     
     # Tokens record function, arguments, and keywork arguments.
     self._tokens = []
     
     # Default context to evaluate the chain.
-    self._args = args
-    self._kwargs = kwargs
-
-
-# > Method to compose a function from the tokens that 
-# have been created in the chain
-
-# In[37]:
-
-@new_method
-def _compose(self):
-    """Compose a function that can be reusable function from the tokens.
-    """
-    if self._tokens:
-        return compose(
-            *pipe(
-                self._tokens,
-                reversed,
-                map(
-                    lambda e: partial(
-                        e[0], *e[1], **e[2]
-                    ) if e[1] or e[2] else e[0],
-                )
-            )
-        )
-    return identity
+    self._args, self._kwargs = args, kwargs
+    
+    # default composer
+    self._composer = composer
 
 
 # > `value` composes the function and then evaluate it with either 
 # the default context or a new set of arguments to evaluate with the same composition.
 
-# In[38]:
+# In[11]:
 
 @new_method
-def value(self, *args, **kwargs):
+def value(self, *args, **kwargs)->[Any, None]:
     """Compose and evaluate the function.  If no args or kwargs are provided
     then the initialized context is used.
     """
-    fn = self._compose()
-    if args or kwargs:
-        return fn(*args, **kwargs)
-    if self._kwargs: 
-        return fn(*self._args, **self._kwargs)
-    if self._args:
-        return fn(*self._args)
-    return self._tokens
+    fn = self.compose
+    # If any new arguments have been supplied then use them
+    if args or kwargs: return fn(*args, **kwargs)
+    # If there are default kwargs
+    if self._kwargs:return fn(*self._args, **self._kwargs)
+    # If there is a context
+    if self._args: return fn(*self._args)
+    return None
 
 
 # > `__call__` does not execute anything it just records args 
 # and kwargs that would be passed to the function.
 
-# In[39]:
+# In[12]:
 
 @new_method
-def __call__(self, *args, **kwargs):
+def __call__(self, *args, **kwargs)->Chain:
     """Add args and kwargs to the tokens.
     """
-    self._tokens[-1][1] = args
-    self._tokens[-1][2] = kwargs
+    self._tokens[-1][1:3] = args, kwargs
     return self
-
-
-# In[40]:
-
-@new_method
-def _getter(self, attr):
-    """Choose a function from the imports based on a named id.
-    """
-    return pipe(self._imports, filter(lambda x: x.__name__ == attr), first)
 
 
 # ```python
 # Chain([1,2,3,4]).reversed().str()
 # ```
 
-# In[41]:
+# In[13]:
 
 @new_method
-def __getattr__(self, attr):
+def __getattr__(self, attr)->Chain:
     """Add a token for an attribute in _imports.
     """
     self._tokens.append([self._getter(attr), [], {}])
@@ -152,12 +148,13 @@ def __getattr__(self, attr):
 # Chain([1,2,3,4])[reversed][str]
 # ```
 
-# In[42]:
+# In[14]:
 
 @new_method
-def __getitem__(self, item):
-    """Any function in the itme can be tokenized.
+def __getitem__(self, item)->Chain:
+    """Any function in the item can be tokenized.
     """
+    if isinstance(item, Iterable): item = juxt(*item)
     self._tokens.append([item, (), {}])
     return self
 
@@ -166,10 +163,10 @@ def __getitem__(self, item):
 
 # > Evaluate when the repr is called.  Make sure to add a `;` to suppress output if necessary
 
-# In[106]:
+# In[15]:
 
 @new_method
-def __repr__(self):
+def __repr__(self)->str:
     return self.value().__repr__()
 
 
@@ -180,26 +177,26 @@ def __repr__(self):
 # XXXXXXXXXXXXXXXXXXXXXXXXXX
 # ```
 
-# In[107]:
+# In[16]:
 
 class _X(Chain):
     """Shorthand for `Chain` where `_X.f is Chain.value`.  Typographically dense.
     """
     @property
-    def f(self): return self.value
+    def f(self)->Any:
+        return self.value
 
 
 # > Copy the state of the chain and return a new one.
 
-# In[108]:
+# In[17]:
 
 @new_method
-def copy(self):
+def copy(self, klass=None)->Chain:
     """Create a new instance of the current chain.  Used for 
     """
-    chain = self.__class__(*self._args, **self._kwargs)
-    chain._imports = self._imports[:]
-    chain._tokens = self._tokens[:]
+    chain = (klass if klass else self.__class__)(*self._args, **self._kwargs)
+    chain._imports, chain._tokens = self._imports[:],  self._tokens[:]
     return chain   
 
 
@@ -210,10 +207,10 @@ def copy(self):
 # >   * adds a piping method to a chain.  Any functional can be included in the pipe.
 # >   * is shorthand for a copy and a an append.
 
-# In[109]:
+# In[18]:
 
 @new_method
-def __or__(self, f):
+def __or__(self, f)->Chain:
     """Extend the current chain.
     """
     chain = self.copy()
@@ -221,33 +218,114 @@ def __or__(self, f):
     return chain
 
 
-# > `__gt__` is shorthand for a copy, append, and a `value` operation.
-
-# In[110]:
+# In[19]:
 
 @new_method
-def __gt__(self, f):
+def __mul__(self, f)->Chain:
+    """Extend the current chain.
+    """
+    chain = self.copy()
+    chain._tokens.append([map(f), [], {}])
+    return chain
+
+
+# In[20]:
+
+@new_method
+def __add__(self, f)->Chain:
+    """Extend the current chain.
+    """
+    chain = self.copy()
+    chain._tokens.append([filter(f), [], {}])
+    return chain
+
+
+# In[21]:
+
+@new_method
+def __sub__(self, f)->Chain:
+    """Extend the current chain.
+    """
+    chain = self.copy()
+    chain._tokens.append([filter(complement(f)), [], {}])
+    return chain
+
+@new_method
+def __mul__(self, f)->Chain:
+    """Extend the current chain.
+    """
+    chain = self.copy()
+    chain._tokens.append([map(f), [], {}])
+    return chain
+
+@new_method
+def __add__(self, f)->Chain:
+    """Extend the current chain.
+    """
+    chain = self.copy()
+    chain._tokens.append([filter(f), [], {}])
+    return chain
+
+
+# > `__gt__` is shorthand for a copy, append, and a `value` operation.
+
+# In[22]:
+
+@new_method
+def __gt__(self, f)->Any:
     """Extend and evaluate the chain.
     """
+    if f is compose: return self.compose
     return self.__or__(f).value()
 
 
-# In[111]:
+# > `this` is a modified chain that can access items and attributes.
+# 
+# > Most frequently, the `f` or `value` must be called as a function closure.
+# 
+# ```python
+# this().set_index('A').index.values.f
+# this().set_index('A')[['B', 'D']].f
+# ```
 
-class this(_X):
-    def __getitem__(self, item):
-        self._tokens.append([lambda x: x[item], [], {}])
-        return self
-    def __getattr__(self, item):
-        self._tokens.append([lambda x: getattr(x, item), [], {}])
-        return self
-    def __call__(self, *args, **kwargs):
-        if self._tokens:
-            self._tokens[-1][0] = compose(
-                lambda x: x(*args, **kwargs),
-                self._tokens[-1][0],
-            )
-        return self
+# In[23]:
+
+class this(_X): pass
+new_this_method = method(this)
+
+
+# > Create a token to access an item.   Arbitrary functions can be applied with a `|`.
+
+# In[24]:
+
+@new_this_method
+def __getitem__(self, item)->_X:
+    self._tokens.append([lambda item, x: x[item], [item], {}])
+    return self
+
+
+# > Create a token to get an attribute.
+
+# In[25]:
+
+@new_this_method
+def __getattr__(self, item)->_X:
+    self._tokens.append([lambda item, x: getattr(x, item), [item], {}])
+    return self
+
+
+# > Create a token to call arguments and kwargs on an attribute or item.
+
+# In[26]:
+
+@new_this_method
+def __call__(self, *args, **kwargs)->_X:
+    """Add args and kwargs to the tokens.
+    """
+    self._tokens.append(
+        [lambda args, kwargs, fn: fn(*args, **kwargs), [args, kwargs], {}]
+    )
+    return self
 
 
 # # About the design
@@ -315,10 +393,3 @@ class this(_X):
 #     __extend a chain__ `Chain([1,2,3]) | map(lambda x: x**2) | list`
 #     
 #     __evaluate a chain__ `Chain([1,2,3]) | map(lambda x: x**2) > list`
-
-# In[112]:
-
-# import pandas as pd
-# from IPython import display
-# this(pd.util.testing.makeDataFrame()).set_index('B')[['A']].to_html() > display.HTML
-
