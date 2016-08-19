@@ -1,0 +1,11 @@
+tricks:
+- watchdog.tricks.ShellCommandTrick:
+    patterns: 
+    - "*.ipynb"
+    ignore_patterns: 
+        - '*/.~*.ipynb'
+        - '*/.ipynb_checkpoints*'
+    shell_command: |
+        jupyter nbconvert --to script "${watch_src_path}" && 
+        python automate.py && 
+        py.test

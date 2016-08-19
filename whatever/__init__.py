@@ -52,20 +52,35 @@
 
 # In[ ]:
 
-__version_info__ = (0, 0, 11)
+__version_info__ = (0, 0, 12)
 __version__ = '.'.join(map(str, __version_info__))
 
 from .chain import Chain, this, _X
-from .magic import Forever
+from .magic import magical
 from .class_maker import method
 from toolz.curried import *
 import toolz.curried
 
 __all__ = [
-    'Forever', 'Chain', 'method', 'this', '_X', *pipe(
+    'magical', 'Chain', 'method', 'this', '_X', *pipe(
         toolz.curried, dir, filter(
             complement(lambda s: s.startswith('_'))
         ), list
     )
 ]
+
+
+# In[1]:
+
+from whatever import *
+
+
+# In[ ]:
+
+# %load chain.py
+
+
+# In[ ]:
+
+
 

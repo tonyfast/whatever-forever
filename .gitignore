@@ -5,3 +5,6 @@ __pycache__
 build/
 dist/
 .eggs
+docs/_site
+docs/.jekyll-metadata
+.DS_Store
