@@ -117,7 +117,7 @@
 # In[7]:
 
 
-# In[129]:
+# In[130]:
 
 import os
 from glob import glob
@@ -129,11 +129,16 @@ for the_script in glob('whatever/*.py'):
     with open(the_script, 'w') as f:
         f.write(src.replace('from class_maker import', 'from .class_maker import'))
 
-for the_docs in [*glob('docs/*.ipynb'), *glob('docs/**/*.ipynb')]:
+for the_docs in [
+    *glob('whatever/*.ipynb'),
+    *glob('docs/*.ipynb'), *glob('docs/**/*.ipynb')
+]:
     with open(the_docs) as f:
         q = pq(export_html(the_docs)[0])
     path = the_docs.split('/')
     fn = path[-1]
+    if path[0] == 'whatever':
+        path[0] = 'docs/source'
     directory = '/'.join(path[:-1])
     if not os.path.isdir(directory):
         makedirs(directory)
@@ -144,6 +149,7 @@ layout: index
 ---
 {% raw %}"""+q('body').html(method='html')+ """
 {% endraw %}""")
+        
 directory = 'docs/_layouts'
 if not os.path.isdir(directory):
     makedirs(directory)
