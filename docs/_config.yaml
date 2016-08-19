@@ -1,1 +1,2 @@
+baseurl: /whatever-forever
 exclude: ["*.py", "*.ipynb"]
