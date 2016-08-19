@@ -6,7 +6,7 @@
 from IPython import display, get_ipython
 from IPython.core import magic_arguments
 from typing import Callable
-from toolz.curried import reduce, partial, curry
+from toolz.curried import curry, partial, pipe, reduce 
 
 __all__ = ['magical']
 

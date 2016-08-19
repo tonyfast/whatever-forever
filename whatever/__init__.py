@@ -1,9 +1,14 @@
 
 # coding: utf-8
 
-# # Whatever Forever
+# # `whatever-forever`
 # 
-# Pythonic syntaxes that save pixels when developing in the notebook.
+# For developing dense ideas in the notebook.
+# 
+# * Easy to define cell magics.
+# * Syntatic sugar for composing and evaluating complex functional operations.
+# 
+# `pip install whatever-forever`
 
 # ## `Chain`
 # 
@@ -13,6 +18,7 @@
 # ### Chainable Values
 # 
 # ```python
+# from whatever import *
 # some_expr = Chain([1,2,3]).reversed().map(lambda x: x**2).list()
 # some_expr.value()
 # some_expr.value([3,5,8])
@@ -20,12 +26,21 @@
 # 
 # ### Syntactic Sugar
 # 
-# `\` & `>` offer chain new functions and evaluate them respectively.
+# `_X` provides syntactic sugar for composing expressions.
 # 
 # ```python
-# from toolz.curried import *
-# some_expr = Chain([1,2,3]) | reversed | map(lambda x: x**2) | list
-# some_value = Chain([1,2,3]) | reversed | map(lambda x: x**2) > list
+# 
+# some_expr = _X([1,2,3]) | reversed | map(lambda x: x**2) | list
+# some_value = _X([1,2,3]) | reversed | map(lambda x: x**2) > list
+# ```
+
+# ## Development
+# 
+# Running test and the docs server.
+# 
+# ```
+# watchmedo tricks tricks.yaml
+# jekyll serve docs -wit
 # ```
 
 # ## `Whatever`
@@ -37,18 +52,14 @@
 # Create a `jinja` to Markdown magic.
 # 
 # ```python
-# from whatever4e import Forever
 # from jinja2 import Template
-# @Forever.cell('jinja2', lang='jinja2', display='Markdown')
+# @magical('jinja2', lang='jinja2', display='Markdown')
 # def render_jinja_with_globals(cell):
 #     return Template(cell).render(**globals())
 # ```
 
 # ## License
-# `whatever4e` is released as free software under the [BSD 3-Clause license]
-# (https://github.com/tonyfast/whatever-forever/blob/master/LICENSE).
-
-# > Add toolz.curried to global imports because I keep using it.
+# `whatever-forever` is released as free software under the [BSD 3-Clause license](https://github.com/tonyfast/whatever-forever/blob/master/LICENSE).
 
 # In[ ]:
 
@@ -68,19 +79,4 @@ __all__ = [
         ), list
     )
 ]
-
-
-# In[1]:
-
-from whatever import *
-
-
-# In[ ]:
-
-# %load chain.py
-
-
-# In[ ]:
-
-
 
