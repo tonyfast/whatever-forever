@@ -117,7 +117,7 @@
 # In[7]:
 
 
-# In[99]:
+# In[129]:
 
 import os
 from glob import glob
@@ -134,7 +134,7 @@ for the_docs in [*glob('docs/*.ipynb'), *glob('docs/**/*.ipynb')]:
         q = pq(export_html(the_docs)[0])
     path = the_docs.split('/')
     fn = path[-1]
-    directory = '/'.join(path[:-1]).replace('docs','docs/_pages',1)
+    directory = '/'.join(path[:-1])
     if not os.path.isdir(directory):
         makedirs(directory)
     with open(directory+'/'+fn.replace('.ipynb','.html'), 'w') as f:
@@ -142,17 +142,16 @@ for the_docs in [*glob('docs/*.ipynb'), *glob('docs/**/*.ipynb')]:
             """---
 layout: index
 ---
-{% raw %}"""+q('body').html()+ """
-{% endraw %}"""
-        )
+{% raw %}"""+q('body').html(method='html')+ """
+{% endraw %}""")
 directory = 'docs/_layouts'
 if not os.path.isdir(directory):
     makedirs(directory)
 
 with open('docs/_layouts/index.html', 'w') as f:
-    q('body').html('{{content}}')
+    q('body').html('{{content}}', method='html')
     f.write(
-        """"""+q('body').html()
+        """<!doctype html><html>"""+q.html(method='html').strip()+"""</html>"""
     )
 
 
@@ -223,33 +222,3 @@ for the_script in glob('whatever/*.py'):
 
 
 # ## Test Release for PyPi
-
-# In[26]:
-
-# !python setup.py register -r pypitest
-# !python setup.py sdist
-# !python setup.py bdist_wheel
-# !python setup.py sdist upload -r pypitest
-# !python setup.py bdist_wheel upload -r pypitest
-
-
-# # Cut a real release for PyPi
-
-# In[28]:
-
-# !python setup.py register -r pypi
-# !python setup.py sdist
-# !python setup.py bdist_wheel
-# !python setup.py sdist upload -r pypi
-# !python setup.py bdist_wheel upload -r pypi
-
-
-# In[30]:
-
-# !pip install whatever-forever --upgrade --no-cache-dir
-
-
-# In[ ]:
-
-
-

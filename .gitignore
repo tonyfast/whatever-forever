@@ -2,9 +2,10 @@
 .ipynb_checkpoints
 __pycache__
 *.pyc
-build/
 dist/
 .eggs
-docs/_site
 docs/.jekyll-metadata
+docs/*.py
+docs/**/*.py
+docs/_site
 .DS_Store
