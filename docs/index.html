@@ -1,0 +1,31 @@
+---
+layout: index
+---
+
+  <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="whatever-forever"><code>whatever-forever</code><a class="anchor-link" href="#whatever-forever">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>{% for page in site.pages %}</p>
+<p><a href="%7B%7Bpage.path%7D%7D">{{page.path}}</a></p>
+<hr>
+<p>{% endfor %}</p>
+
+</div>
+</div>
+</div>
+    </div>
+  </div>

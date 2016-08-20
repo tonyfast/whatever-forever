@@ -68,12 +68,12 @@ __version__ = '.'.join(map(str, __version_info__))
 
 from .chain import Chain, this, _X
 from .magic import magical
-from .class_maker import method
+from .dispatch import Dispatch
 from toolz.curried import *
 import toolz.curried
 
 __all__ = [
-    'magical', 'Chain', 'method', 'this', '_X', *pipe(
+    'magical', 'Chain', 'this', 'Dispatch', '_X', *pipe(
         toolz.curried, dir, filter(
             complement(lambda s: s.startswith('_'))
         ), list

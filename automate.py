@@ -43,7 +43,15 @@
 # )
 
 
-# In[132]:
+# In[144]:
+
+heading = """---
+layout: index
+---
+{}"""
+
+
+# In[149]:
 
 import os
 from glob import glob
@@ -70,11 +78,9 @@ for the_docs in [
         makedirs(directory)
     with open(directory+'/'+fn.replace('.ipynb','.html'), 'w') as f:
         f.write(
-            """---
-layout: index
----
-{% raw %}"""+q('body').html(method='html')+ """
-{% endraw %}""")
+            heading.format(
+            ("{}" if 'index.ipynb' == fn else """{{% raw %}}{}{{% endraw %}}""").format(q('body').html(method='html')))
+        )
         
 directory = 'docs/_layouts'
 if not os.path.isdir(directory):

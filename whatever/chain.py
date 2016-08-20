@@ -20,21 +20,22 @@
 
 # The only required import is `toolz` from pypi
 
-# In[192]:
+# In[87]:
 
-from .class_maker import method
 import builtins
 import operator
 import toolz.curried
 from toolz.curried import (
-    compose, filter, first, juxt, map, partial, pipe, concat, valmap, complement
+    complement, compose, concat, do, filter, first, flip, juxt, last, map, partial, pipe, second, valmap,
 )
 from typing import Any, Callable, Dict, List, Set
+from collections import OrderedDict
+from types import LambdaType
 
 __all__ = ['Chain', '_X', 'this',]
 
 
-# In[193]:
+# In[88]:
 
 def module_methods(module)->list: 
     return pipe(module, dir, filter(
@@ -44,21 +45,11 @@ def module_methods(module)->list:
         ), list)
 
 
-# In[194]:
-
-def composer(tokens)->Callable: 
-    return compose(*pipe(tokens, reversed, filter(
-            compose(bool, first,)
-        ), map(
-            lambda t: partial(t[0], *t[1], **t[2]) if t[1] or t[2] else t[0]
-        ), list))
-
-
 # ```python
 # Chain([1,2]).map(lambda x: x**2).list().value()
 # ```
 
-# In[276]:
+# In[124]:
 
 class Chain(object): 
     _imports = [toolz.curried, operator, builtins]
@@ -70,14 +61,14 @@ class Chain(object):
     
     def __init__(
         self,
-        *args, **kwargs
+        *args, getter=None, composer=None, **kwargs
     ):  
         # An object with aliases to functions.
         self._getter = pipe(
             self._imports, reversed, map(module_methods), 
             concat, filter(lambda x: hasattr(x,'__name__')), 
             map(lambda x: (x.__name__, x)), list, dict
-        ).get
+        ).get if not getter else getter
 
         # Tokens record function, arguments, and keywork arguments.
         self._tokens = []
@@ -86,7 +77,19 @@ class Chain(object):
         self._args, self._kwargs = args, kwargs
 
         # default composer
-        self._composer = composer
+        self._composer = lambda tokens: compose(
+            *pipe(tokens, reversed, 
+                map(juxt(
+                        compose(
+                            lambda x: x if isinstance(x, Callable) else self._getter(x), first
+                        ), second, last
+                    )
+                ), filter(
+                    compose(bool, first,)
+                ), map(
+                    lambda t: partial(t[0], *t[1], **t[2]) if t[1] or t[2] else t[0]
+                ), list)
+        ) if not composer else composer
 
 
     def value(self, *args, **kwargs)->[Any, None]:
@@ -114,7 +117,7 @@ class Chain(object):
     def __getattr__(self, attr):
         """Add a token for an attribute in _imports.
         """
-        self._tokens.append([self._getter(attr), [], {}])
+        self._tokens.append([attr, [], {}])
         return self
 
     def __getitem__(self, item):
@@ -159,7 +162,7 @@ class Chain(object):
 # this().set_index('A')[['B', 'D']].f
 # ```
 
-# In[280]:
+# In[126]:
 
 class _X(Chain):
     """Shorthand for `Chain` where `_X.f is Chain.value`.  Typographically dense.
@@ -168,22 +171,28 @@ class _X(Chain):
     def f(self)->Callable:
         return self.value
     
-    def __getitem__(self, item):
-        token = [[item, [], {}]]
+    def __getitem__(self, item):        
+        if isinstance(item, Callable): 
+            return super().__getitem__(item)
         
+        # Sugar
         if isinstance(item, Set):
-            item = pipe(item, map(lambda x: (x.__name__, x,)), dict)
-       
+            if pipe(item, map(
+                    partial(flip(isinstance), LambdaType)
+                ), any):
+                raise TypeError("can not chain lambdas in a set.")
+            item = pipe(item, map(lambda x: (x, x,)), OrderedDict)
+            
         if isinstance(item, Dict): 
-            token =[
+            self._tokens.extend([
                 [lambda func, x: juxt(*func)(x), [item.values()], {}],
                 [zip, [item.keys()], {}], [dict, [], {}],
-            ]            
+            ])            
         
         if isinstance(item, List): 
-            token =[[lambda func, x: juxt(*func)(x), [item], {}],]
-            
-        self._tokens.extend(token)
+            self._tokens.extend([
+                [lambda func, x: juxt(*func)(x), [item], {}],
+            ])
         return self
     
     def __or__(self, f):
@@ -196,7 +205,7 @@ class _X(Chain):
         """
         if f is compose: 
             return self.compose
-        return self.__or__(f).value()
+        return self.copy()[f].value()
     
     def __mul__(self, f):
         """Apply a map function.
@@ -214,7 +223,7 @@ class _X(Chain):
         return self.copy()[filter](complement(f))
 
 
-# In[244]:
+# In[105]:
 
 class this(_X): 
     def __getitem__(self, item):

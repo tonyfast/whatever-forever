@@ -89,12 +89,12 @@ jekyll serve docs -wit</code></pre>
 
 <span class="kn">from</span> <span class="nn">.chain</span> <span class="k">import</span> <span class="n">Chain</span><span class="p">,</span> <span class="n">this</span><span class="p">,</span> <span class="n">_X</span>
 <span class="kn">from</span> <span class="nn">.magic</span> <span class="k">import</span> <span class="n">magical</span>
-<span class="kn">from</span> <span class="nn">class_maker</span> <span class="k">import</span> <span class="n">method</span>
+<span class="kn">from</span> <span class="nn">.dispatch</span> <span class="k">import</span> <span class="n">Dispatch</span>
 <span class="kn">from</span> <span class="nn">toolz.curried</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">toolz.curried</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">'magical'</span><span class="p">,</span> <span class="s1">'Chain'</span><span class="p">,</span> <span class="s1">'method'</span><span class="p">,</span> <span class="s1">'this'</span><span class="p">,</span> <span class="s1">'_X'</span><span class="p">,</span> <span class="o">*</span><span class="n">pipe</span><span class="p">(</span>
+    <span class="s1">'magical'</span><span class="p">,</span> <span class="s1">'Chain'</span><span class="p">,</span> <span class="s1">'this'</span><span class="p">,</span> <span class="s1">'Dispatch'</span><span class="p">,</span> <span class="s1">'_X'</span><span class="p">,</span> <span class="o">*</span><span class="n">pipe</span><span class="p">(</span>
         <span class="n">toolz</span><span class="o">.</span><span class="n">curried</span><span class="p">,</span> <span class="nb">dir</span><span class="p">,</span> <span class="nb">filter</span><span class="p">(</span>
             <span class="n">complement</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'_'</span><span class="p">))</span>
         <span class="p">),</span> <span class="nb">list</span>
@@ -109,5 +109,4 @@ jekyll serve docs -wit</code></pre>
 </div>
     </div>
   </div>
-
 {% endraw %}
