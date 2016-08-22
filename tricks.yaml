@@ -3,9 +3,10 @@ tricks:
     patterns: 
     - "*.ipynb"
     ignore_patterns: 
+        - docs
         - '*/.~*.ipynb'
         - '*/.ipynb_checkpoints*'
     shell_command: |
         jupyter nbconvert --to script "${watch_src_path}" && 
         python automate.py && 
-        py.test
+        py.test "${watch_src_path}"

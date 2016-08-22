@@ -20,8 +20,8 @@ layout: index
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>{% for page in site.pages %}</p>
-<p><a href="%7B%7Bpage.path%7D%7D">{{page.path}}</a></p>
-<hr>
+<p><a href="{{site.baseurl}}/{{page.path}}">{{page.path}}</a></p>
+<hr/>
 <p>{% endfor %}</p>
 
 </div>

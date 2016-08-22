@@ -7,41 +7,27 @@ layout: index
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [76]:</div>
+<div class="prompt input_prompt">In [1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">zip_longest</span>
-<span class="kn">from</span> <span class="nn">toolz.curried</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">compose</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="n">juxt</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span>
-    <span class="nb">map</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">pipe</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">valmap</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Iterable</span>
+<div class=" highlight hl-ipython3"><pre><span/><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Dispatch'</span><span class="p">]</span>
 
 <span class="k">class</span> <span class="nc">Dispatch</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">):</span>
     <span class="sd">"""An object that provides multiple dispatch when it is called.</span>
 <span class="sd">    """</span>
-    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getattr__</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">fns</span> <span class="o">=</span> <span class="n">pipe</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span>
-                    <span class="n">juxt</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">x</span><span class="p">]),</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">identity</span><span class="p">,)),</span>
-                <span class="nb">map</span><span class="p">(</span>
-                    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">pipe</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">partial</span><span class="p">(</span><span class="n">zip_longest</span><span class="p">,</span> <span class="n">args</span><span class="p">),</span> <span class="nb">list</span><span class="p">),</span> <span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span>
-                <span class="p">),</span>
-                <span class="nb">filter</span><span class="p">(</span><span class="n">compose</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="n">first</span><span class="p">)),</span> 
-                <span class="nb">list</span><span class="p">,</span>
-            <span class="p">)</span>        
-        <span class="k">if</span> <span class="n">fns</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">pipe</span><span class="p">(</span><span class="n">fns</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Type not found"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">types</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">types</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+                <span class="n">types</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">types</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">type_</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">types</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">type_</span> <span class="o">!=</span> <span class="n">Any</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span> <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Type(s) not found"</span><span class="p">)</span>
 </pre></div>
 
 </div>

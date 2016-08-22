@@ -20,121 +20,144 @@
 
 # The only required import is `toolz` from pypi
 
-# In[87]:
+# In[88]:
 
 import builtins
 import operator
 import toolz.curried
 from toolz.curried import (
-    complement, compose, concat, do, filter, first, flip, juxt, last, map, partial, pipe, second, valmap,
+    complement, compose, concat, do, filter, 
+    first, flip, identity, juxt, last, map, partial, 
+    pipe, second, valmap,
 )
-from typing import Any, Callable, Dict, List, Set
+from typing import Any, Callable, Dict, List, Set, Tuple
 from collections import OrderedDict
-from types import LambdaType
+from types import LambdaType, MethodType
 
 __all__ = ['Chain', '_X', 'this',]
-
-
-# In[88]:
-
-def module_methods(module)->list: 
-    return pipe(module, dir, filter(
-            lambda x: not x.startswith('_')
-        ), map(
-            partial(getattr, module)
-        ), list)
 
 
 # ```python
 # Chain([1,2]).map(lambda x: x**2).list().value()
 # ```
 
-# In[124]:
+# In[84]:
 
-class Chain(object): 
-    _imports = [toolz.curried, operator, builtins]
+def import_functions(module): 
+    return pipe(
+        module, dir, map(partial(getattr, module)),
+        filter(partial(flip(hasattr), '__name__')),
+    )
+
+
+# In[187]:
+
+def evaluate(args, kwargs, fn):
+    return fn(*args, **kwargs)
+
+class DefaultComposer(object):
+    keyed_methods = pipe([
+            toolz.curried, builtins, operator
+        ], map(import_functions), concat, map(juxt(
+            partial(flip(getattr), '__name__'), identity
+        )), list,  reversed, dict)
+    @staticmethod
+    def item(item):
+        return [[item, [], {}]]
     
-    # compose goes here because it is in the namespace already
-    @property
-    def compose(self)->Callable:
-        return self._composer(self._tokens)
+    @classmethod
+    def attr(cls, item):
+        return [[cls.keyed_methods.get(item), [], {}]]
+    
+    @staticmethod
+    def call(tokens, *args, **kwargs):
+        tokens[-1][1:] = args, kwargs
+        return tokens
+    
+    @staticmethod
+    def composer(tokens):
+        return compose(*pipe(
+            tokens, reversed, filter(first), map(
+                lambda arg: partial(arg[0], *arg[1], **arg[2]) if any(arg[1:]) else arg[0]
+            ), list
+        ))
+
+
+# In[86]:
+
+class Repr(object):
+    def __repr__(self):
+        return self.value().__repr__()
+
+
+# In[87]:
+
+class Chain(Repr): 
+    _composer = DefaultComposer
     
     def __init__(
         self,
-        *args, getter=None, composer=None, **kwargs
+        *args, 
+        **kwargs
     ):  
-        # An object with aliases to functions.
-        self._getter = pipe(
-            self._imports, reversed, map(module_methods), 
-            concat, filter(lambda x: hasattr(x,'__name__')), 
-            map(lambda x: (x.__name__, x)), list, dict
-        ).get if not getter else getter
-
         # Tokens record function, arguments, and keywork arguments.
         self._tokens = []
-
+        
         # Default context to evaluate the chain.
         self._args, self._kwargs = args, kwargs
-
-        # default composer
-        self._composer = lambda tokens: compose(
-            *pipe(tokens, reversed, 
-                map(juxt(
-                        compose(
-                            lambda x: x if isinstance(x, Callable) else self._getter(x), first
-                        ), second, last
-                    )
-                ), filter(
-                    compose(bool, first,)
-                ), map(
-                    lambda t: partial(t[0], *t[1], **t[2]) if t[1] or t[2] else t[0]
-                ), list)
-        ) if not composer else composer
-
 
     def value(self, *args, **kwargs)->[Any, None]:
         """Compose and evaluate the function.  If no args or kwargs are provided
         then the initialized context is used.
         """
-        fn = self.compose
+        fn = self._composer.composer(self._tokens)
         
         # If any new arguments have been supplied then use them
-        if args or kwargs: return fn(*args, **kwargs)
+        if args or kwargs: 
+            return fn(*args, **kwargs)
         
         # If there are default kwargs
-        if self._kwargs:return fn(*self._args, **self._kwargs)
+        if self._kwargs:
+            return fn(*self._args, **self._kwargs)
         
         # If there is a context
-        if self._args: return fn(*self._args)
+        if self._args: 
+            return fn(*self._args)
+
         return None
     
-    def __call__(self, *args, **kwargs):
-        """Add args and kwargs to the tokens.
-        """
-        self._tokens[-1][1:3] = args, kwargs
-        return self
-
     def __getattr__(self, attr):
         """Add a token for an attribute in _imports.
         """
-        self._tokens.append([attr, [], {}])
+        self._tokens.extend(
+            self._composer.attr(attr),
+        )
         return self
 
     def __getitem__(self, item):
         """Any function in the item can be tokenized.
         """
-        self._tokens.append([item, (), {}])
+        self._tokens.extend(
+            self._composer.item(item),
+        )
         return self
     
-    def __repr__(self)->str:
-        return self.value().__repr__()
+    def __call__(self, *args, **kwargs):
+        self._tokens = self._composer.call(
+            self._tokens, *args, **kwargs
+        )
+        return self
     
     def copy(self, klass=None):
         """Create a new instance of the current chain.  Used for 
         """
         chain = (klass if klass else self.__class__)(*self._args, **self._kwargs)
-        chain._imports, chain._tokens = self._imports.copy(),  self._tokens.copy()
+        chain._tokens = self._tokens.copy()
         return chain
+    
+    @property
+    def compose(self):
+        return self._composer.composer(self._tokens)
 
 
 # ```
@@ -162,7 +185,20 @@ class Chain(object):
 # this().set_index('A')[['B', 'D']].f
 # ```
 
-# In[126]:
+# In[167]:
+
+from inspect import  getsource
+
+
+# In[169]:
+
+DefaultComposer
+
+
+# In[189]:
+
+def juxtapose(func, x): 
+    return juxt(*func)(x)
 
 class _X(Chain):
     """Shorthand for `Chain` where `_X.f is Chain.value`.  Typographically dense.
@@ -185,14 +221,18 @@ class _X(Chain):
             
         if isinstance(item, Dict): 
             self._tokens.extend([
-                [lambda func, x: juxt(*func)(x), [item.values()], {}],
+                [juxtapose, [item.values()], {}],
                 [zip, [item.keys()], {}], [dict, [], {}],
             ])            
         
-        if isinstance(item, List): 
+        elif isinstance(item, (List, Tuple,)): 
             self._tokens.extend([
-                [lambda func, x: juxt(*func)(x), [item], {}],
+                [juxtapose, [item], {}],
             ])
+            
+        else:
+            return super().__getitem__(item)
+ 
         return self
     
     def __or__(self, f):
@@ -223,23 +263,35 @@ class _X(Chain):
         return self.copy()[filter](complement(f))
 
 
-# In[105]:
+# In[183]:
 
-class this(_X): 
-    def __getitem__(self, item):
-        self._tokens.append([lambda item, x: x[item], [item], {}])
-        return self
+def getitem(item, obj): 
+    return obj[item]
 
-    def __getattr__(self, item):
-        self._tokens.append([lambda item, x: getattr(x, item), [item], {}])
-        return self
-
-    def __call__(self, *args, **kwargs):
+class ThisComposer(DefaultComposer): 
+    @staticmethod
+    def item(item):
+        if isinstance(item, Callable):
+            return [[item, [], {}]]
+        return [[getitem, [item], {}]]
+    @staticmethod
+    def attr(item):
+        return [[flip(getattr), [item], {}]]
+    @staticmethod
+    def call(tokens, *args, **kwargs):
         """Add args and kwargs to the tokens.
         """
-        self._tokens.append(
-            [lambda args, kwargs, fn: fn(*args, **kwargs), [args, kwargs], {}]
-        )
+        tokens.append([evaluate, [args, kwargs], {}])
+        return tokens
+
+
+# In[184]:
+
+class this(_X): 
+    _composer = ThisComposer
+    
+    def __getitem__(self, item):
+        self._tokens.extend(self._composer.item(item))
         return self
 
 
