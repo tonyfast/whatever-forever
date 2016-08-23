@@ -43,7 +43,7 @@
 # )
 
 
-# In[78]:
+# In[2]:
 
 heading = """---
 layout: index
@@ -51,12 +51,12 @@ layout: index
 """
 
 
-# In[81]:
+# In[10]:
 
 import os
 from glob import glob
 from pyquery import PyQuery as pq
-from nbconvert import export_html
+from nbconvert import export_html, export_rst
 for the_script in glob('whatever/*.py'):
     with open(the_script) as f:
         src = f.read()
@@ -90,6 +90,8 @@ with open('docs/_layouts/index.html', 'w') as f:
     f.write(
         """<!doctype html><html>"""+q.html(method='html').strip()+"""</html>"""
     )
+with open('README.rst', 'w') as f:
+    f.write(export_rst('docs/tests/test-readme.ipynb')[0])
 
 
 # ### Run tests
