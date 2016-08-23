@@ -4,7 +4,7 @@
 # ## Automation
 # Nothing too fancy here.
 
-# In[58]:
+# In[77]:
 
 # %%file setup.py
 # from os.path import join, dirname
@@ -43,7 +43,7 @@
 # )
 
 
-# In[22]:
+# In[78]:
 
 heading = """---
 layout: index
@@ -51,18 +51,7 @@ layout: index
 """
 
 
-# In[48]:
-
-from lxml.html import HTMLParser, fromstring
-UTF8_PARSER = HTMLParser(encoding='utf-8')
-
-
-# In[ ]:
-
-
-
-
-# In[56]:
+# In[81]:
 
 import os
 from glob import glob
@@ -77,7 +66,7 @@ for the_docs in [
     *glob('docs/*.ipynb'), *glob('docs/**/*.ipynb')
 ]:
     with open(the_docs) as f:
-        q = pq(fromstring(export_html(the_docs)[0], parser=UTF8_PARSER))
+        q = pq(export_html(the_docs)[0])
     path = the_docs.split('/')
     fn = path[-1]
     if path[0] == 'whatever':
@@ -91,12 +80,6 @@ for the_docs in [
             + ("{}" if 'index.ipynb' == fn else """{{% raw %}}{}{{% endraw %}}""").format(
                     q('body').html())
             )
-        if fn == 'index.ipynb':
-            break
-        
-
-
-# In[57]:
 
 directory = 'docs/_layouts'
 if not os.path.isdir(directory):

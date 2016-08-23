@@ -20,7 +20,7 @@
 
 # The only required import is `toolz` from pypi
 
-# In[88]:
+# In[15]:
 
 import builtins
 import operator
@@ -30,7 +30,7 @@ from toolz.curried import (
     first, flip, identity, juxt, last, map, partial, 
     pipe, second, valmap,
 )
-from typing import Any, Callable, Dict, List, Set, Tuple
+from typing import Any, Callable
 from collections import OrderedDict
 from types import LambdaType, MethodType
 
@@ -41,7 +41,7 @@ __all__ = ['Chain', '_X', 'this',]
 # Chain([1,2]).map(lambda x: x**2).list().value()
 # ```
 
-# In[84]:
+# In[16]:
 
 def import_functions(module): 
     return pipe(
@@ -50,7 +50,7 @@ def import_functions(module):
     )
 
 
-# In[187]:
+# In[17]:
 
 def evaluate(args, kwargs, fn):
     return fn(*args, **kwargs)
@@ -63,11 +63,11 @@ class DefaultComposer(object):
         )), list,  reversed, dict)
     @staticmethod
     def item(item):
-        return [[item, [], {}]]
+        return item
     
     @classmethod
     def attr(cls, item):
-        return [[cls.keyed_methods.get(item), [], {}]]
+        return cls.keyed_methods.get(item)
     
     @staticmethod
     def call(tokens, *args, **kwargs):
@@ -83,14 +83,14 @@ class DefaultComposer(object):
         ))
 
 
-# In[86]:
+# In[18]:
 
 class Repr(object):
     def __repr__(self):
         return self.value().__repr__()
 
 
-# In[87]:
+# In[19]:
 
 class Chain(Repr): 
     _composer = DefaultComposer
@@ -126,20 +126,27 @@ class Chain(Repr):
 
         return None
     
+    def _tokenize(self, composer, attr):
+        attr = composer(attr)
+        if not isinstance(attr, list):
+            attr = [[attr, [], ()]]
+        return attr
+
     def __getattr__(self, attr):
-        """Add a token for an attribute in _imports.
+        """Apply the attribute getter
         """
         self._tokens.extend(
-            self._composer.attr(attr),
+            self._tokenize(self._composer.attr, attr)
         )
         return self
-
+    
     def __getitem__(self, item):
         """Any function in the item can be tokenized.
         """
         self._tokens.extend(
-            self._composer.item(item),
+            self._tokenize(self._composer.item, item)
         )
+
         return self
     
     def __call__(self, *args, **kwargs):
@@ -185,17 +192,41 @@ class Chain(Repr):
 # this().set_index('A')[['B', 'D']].f
 # ```
 
-# In[167]:
+# In[20]:
 
-from inspect import  getsource
+class SugarComposer(DefaultComposer):
+    @staticmethod
+    def item(item):
+        if isinstance(item, Callable):
+            return item
+        
+        intermediate_chain = Chain()
+        # Sugar
+        if isinstance(item, set):
+            if pipe(item, map(
+                    partial(flip(isinstance), LambdaType)
+                ), any):
+                raise TypeError("can not chain lambdas in a set.")
+            item = pipe(item, map(lambda x: (x, x,)), OrderedDict)
+        
+        # returned a  keyed 
+        if isinstance(item, dict): 
+            intermediate_chain._tokens = [
+                [juxtapose, [item.values()], {}],
+                [zip, [item.keys()], {}], 
+                [dict, [], {}],
+            ]
+        
+        # juxt a tuple or list of values
+        if isinstance(item, (list, tuple,)):
+            intermediate_chain._tokens = [
+                [juxtapose, [item], {}],
+            ]
+        
+        return intermediate_chain.compose
 
 
-# In[169]:
-
-DefaultComposer
-
-
-# In[189]:
+# In[21]:
 
 def juxtapose(func, x): 
     return juxt(*func)(x)
@@ -203,37 +234,11 @@ def juxtapose(func, x):
 class _X(Chain):
     """Shorthand for `Chain` where `_X.f is Chain.value`.  Typographically dense.
     """
+    _composer = SugarComposer
+    
     @property
     def f(self)->Callable:
         return self.value
-    
-    def __getitem__(self, item):        
-        if isinstance(item, Callable): 
-            return super().__getitem__(item)
-        
-        # Sugar
-        if isinstance(item, Set):
-            if pipe(item, map(
-                    partial(flip(isinstance), LambdaType)
-                ), any):
-                raise TypeError("can not chain lambdas in a set.")
-            item = pipe(item, map(lambda x: (x, x,)), OrderedDict)
-            
-        if isinstance(item, Dict): 
-            self._tokens.extend([
-                [juxtapose, [item.values()], {}],
-                [zip, [item.keys()], {}], [dict, [], {}],
-            ])            
-        
-        elif isinstance(item, (List, Tuple,)): 
-            self._tokens.extend([
-                [juxtapose, [item], {}],
-            ])
-            
-        else:
-            return super().__getitem__(item)
- 
-        return self
     
     def __or__(self, f):
         """Extend the current chain.
@@ -250,33 +255,35 @@ class _X(Chain):
     def __mul__(self, f):
         """Apply a map function.
         """
-        return self.copy()[map](f)
+        return self.copy()[map](self._composer.item(f))
+        
         
     def __add__(self, f):
         """Filter values that are true.
         """
-        return self.copy()[filter](f)
-
-    def __sub__(self, f):
-        """Remove values matching the function
-        """
-        return self.copy()[filter](complement(f))
+        return self.copy()[filter](self._composer.item(f))
+    
+    @property
+    def end(self): self.value
 
 
-# In[183]:
+# In[22]:
 
 def getitem(item, obj): 
     return obj[item]
 
-class ThisComposer(DefaultComposer): 
+def getattr_(item, obj):
+    return getattr(obj, item)
+
+class ThisComposer(SugarComposer): 
     @staticmethod
     def item(item):
-        if isinstance(item, Callable):
-            return [[item, [], {}]]
         return [[getitem, [item], {}]]
+    
     @staticmethod
     def attr(item):
-        return [[flip(getattr), [item], {}]]
+        return [[getattr_, [item], {}]]
+    
     @staticmethod
     def call(tokens, *args, **kwargs):
         """Add args and kwargs to the tokens.
@@ -285,14 +292,16 @@ class ThisComposer(DefaultComposer):
         return tokens
 
 
-# In[184]:
+# In[23]:
 
-class this(_X): 
+class this(Chain): 
     _composer = ThisComposer
     
-    def __getitem__(self, item):
-        self._tokens.extend(self._composer.item(item))
-        return self
+    @property
+    def chain(self, chain_type=_X): return chain_type(self.value())
+    
+    @property
+    def f(self): return self.value
 
 
 # # About the design
@@ -360,3 +369,8 @@ class this(_X):
 #     __extend a chain__ `Chain([1,2,3]) | map(lambda x: x**2) | list`
 #     
 #     __evaluate a chain__ `Chain([1,2,3]) | map(lambda x: x**2) > list`
+
+# In[ ]:
+
+
+

@@ -9,4 +9,4 @@ tricks:
     shell_command: |
         jupyter nbconvert --to script "${watch_src_path}" && 
         python automate.py && 
-        py.test "${watch_src_path}"
+        py.test
