@@ -1,77 +1,92 @@
 
-Whatever Forever
-================
+.. code:: python
 
-Pythonic syntaxes that save pixels when developing in the notebook.
+    from whatever import *
 
-``Chain``
----------
+``whatever-forever``
+====================
 
-A chain is a typographically compact manner of creating complicated
-expressions in Pythonic syntax.
+-  Syntactic sugar to build complex functions in Python; it's just a
+   class.
+-  Multiple dispatching ``dict``\ s.
+-  Stupid easy cell magics.
 
-Chainable Values
-~~~~~~~~~~~~~~~~
+Chaining
+========
+
+``Chain`` and ``_X``
 
 .. code:: python
 
-    some_expr = Chain([1,2,3]).reversed().map(lambda x: x**2).list()
-    some_expr.value()
-    some_expr.value([3,5,8])
+    Chain(5).range.list
 
-Syntactic Sugar
-~~~~~~~~~~~~~~~
 
-``\`` & ``>`` offer chain new functions and evaluate them respectively.
 
-.. code:: python
 
-    from toolz.curried import *
-    some_expr = Chain([1,2,3]) | reversed | map(lambda x: x**2) | list
-    some_value = Chain([1,2,3]) | reversed | map(lambda x: x**2) > list
+.. parsed-literal::
 
-``Whatever``
-------------
+    [0, 1, 2, 3, 4]
 
-Easy to construct cell magics
 
-Cell Magics
-~~~~~~~~~~~
-
-Create a ``jinja`` to Markdown magic.
 
 .. code:: python
 
-    from whatever4e import Forever
-    from jinja2 import Template
-    @Forever.cell('jinja2', lang='jinja2', display='Markdown')
-    def render_jinja_with_globals(cell):
-        return Template(cell).render(**globals())
+    _X(5) | range | list
 
-License
--------
 
-``whatever4e`` is released as free software under the [BSD 3-Clause
-license]
-(https://github.com/tonyfast/whatever-forever/blob/master/LICENSE).
 
-    Add toolz.curried to global imports because I keep using it.
+
+.. parsed-literal::
+
+    [0, 1, 2, 3, 4]
+
+
+
+A random list
+'''''''''''''
 
 .. code:: python
 
-    __version_info__ = (0, 0, 11)
-    __version__ = '.'.join(map(str, __version_info__))
-    
-    from .chain import Chain, this, _X
-    from .magic import Forever
-    from class_maker import method
-    from toolz.curried import *
-    import toolz.curried
-    
-    __all__ = [
-        'Forever', 'Chain', 'method', 'this', '_X', *pipe(
-            toolz.curried, dir, filter(
-                complement(lambda s: s.startswith('_'))
-            ), list
-        )
-    ]
+    from random import random
+    random_list = _X(5).range | map(lambda x: random()) > list
+    str(random_list)
+
+
+
+
+.. parsed-literal::
+
+    '[0.9935285316596995, 0.014724817177512728, 0.8948846635050951, 0.8599661767263426, 0.2981499631390274]'
+
+
+
+.. code:: python
+
+    from random import random
+    _X(random_list) * (lambda s: '%3.2f' % s) | list
+
+
+
+
+.. parsed-literal::
+
+    ['0.99', '0.01', '0.89', '0.86', '0.30']
+
+
+
+.. code:: python
+
+    from random import random
+    ((_X(random_list) + (lambda x: x >.5) )
+     * (lambda s: '%3.2f' % s) 
+     | list
+    )
+
+
+
+
+.. parsed-literal::
+
+    ['0.99', '0.89', '0.86']
+
+
