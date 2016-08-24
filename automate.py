@@ -4,7 +4,16 @@
 # ## Automation
 # Nothing too fancy here.
 
-# In[77]:
+# In[16]:
+
+# !python setup.py register -r pypi
+# !python setup.py sdist
+# !python setup.py bdist_wheel
+# !python setup.py sdist upload -r pypi
+# !python setup.py bdist_wheel upload -r pypi
+
+
+# In[14]:
 
 # %%file setup.py
 # from os.path import join, dirname
@@ -16,7 +25,7 @@
 
 # setuptools.setup(
 #     name="whatever-forever",
-#     version="0.0.12",
+#     version="0.0.14",
 #     author="Tony Fast",
 #     author_email="tony.fast@gmail.com",
 #     description="prototype whatever in the Jupyter notebook",

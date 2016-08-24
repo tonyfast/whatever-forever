@@ -20,7 +20,7 @@
 
 # The only required import is `toolz` from pypi
 
-# In[15]:
+# In[1]:
 
 import builtins
 import operator
@@ -41,7 +41,7 @@ __all__ = ['Chain', '_X', 'this',]
 # Chain([1,2]).map(lambda x: x**2).list().value()
 # ```
 
-# In[16]:
+# In[2]:
 
 def import_functions(module): 
     return pipe(
@@ -50,7 +50,7 @@ def import_functions(module):
     )
 
 
-# In[17]:
+# In[3]:
 
 def evaluate(args, kwargs, fn):
     return fn(*args, **kwargs)
@@ -83,14 +83,14 @@ class DefaultComposer(object):
         ))
 
 
-# In[18]:
+# In[4]:
 
 class Repr(object):
     def __repr__(self):
         return self.value().__repr__()
 
 
-# In[19]:
+# In[5]:
 
 class Chain(Repr): 
     _composer = DefaultComposer
@@ -192,10 +192,10 @@ class Chain(Repr):
 # this().set_index('A')[['B', 'D']].f
 # ```
 
-# In[20]:
+# In[50]:
 
-class SugarComposer(DefaultComposer):
-    @staticmethod
+class SugarComposer(DefaultComposer):    
+
     def item(item):
         if isinstance(item, Callable):
             return item
@@ -221,12 +221,20 @@ class SugarComposer(DefaultComposer):
         if isinstance(item, (list, tuple,)):
             intermediate_chain._tokens = [
                 [juxtapose, [item], {}],
+                [type(item), [], {}], # assure type
             ]
         
         return intermediate_chain.compose
+    
+    @classmethod
+    def call(cls, tokens, *args, **kwargs):
+        if tokens[-1][0] in [map]:
+            if kwargs and not args: args = [kwargs]
+            return DefaultComposer.call(tokens, cls.item(args[0]))
+        return DefaultComposer.call(tokens, *args, **kwargs)
 
 
-# In[21]:
+# In[55]:
 
 def juxtapose(func, x): 
     return juxt(*func)(x)
@@ -255,19 +263,18 @@ class _X(Chain):
     def __mul__(self, f):
         """Apply a map function.
         """
-        return self.copy()[map](self._composer.item(f))
-        
+        return self.copy().map(f)
         
     def __add__(self, f):
         """Filter values that are true.
         """
-        return self.copy()[filter](self._composer.item(f))
+        return self.copy().filter(self._composer.item(f))
     
     @property
     def end(self): self.value
 
 
-# In[22]:
+# In[56]:
 
 def getitem(item, obj): 
     return obj[item]
@@ -275,7 +282,7 @@ def getitem(item, obj):
 def getattr_(item, obj):
     return getattr(obj, item)
 
-class ThisComposer(SugarComposer): 
+class ThisComposer(DefaultComposer): 
     @staticmethod
     def item(item):
         return [[getitem, [item], {}]]
@@ -292,7 +299,7 @@ class ThisComposer(SugarComposer):
         return tokens
 
 
-# In[23]:
+# In[54]:
 
 class this(Chain): 
     _composer = ThisComposer
