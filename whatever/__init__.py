@@ -8,7 +8,7 @@ __version__ = '.'.join(map(str, __version_info__))
 
 from .chain import Chain, this, _X
 from .magic import magical
-from .dispatch import Dispatch
+from .callables import Dispatch
 from toolz.curried import *
 import toolz.curried
 

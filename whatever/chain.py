@@ -22,6 +22,7 @@
 
 # In[1]:
 
+from .callables import SetCallable, TupleCallable, ListCallable, DictCallable, Dispatch
 import builtins
 import operator
 import toolz.curried
@@ -90,7 +91,7 @@ class Repr(object):
         return self.value().__repr__()
 
 
-# In[5]:
+# In[6]:
 
 class Chain(Repr): 
     _composer = DefaultComposer
@@ -128,7 +129,7 @@ class Chain(Repr):
     
     def _tokenize(self, composer, attr):
         attr = composer(attr)
-        if not isinstance(attr, list):
+        if isinstance(attr, Callable):
             attr = [[attr, [], ()]]
         return attr
 
@@ -192,39 +193,21 @@ class Chain(Repr):
 # this().set_index('A')[['B', 'D']].f
 # ```
 
+# In[ ]:
+
+multiple_dispatch = Dispatch([        
+        [set, SetCallable],
+        [list, ListCallable],                
+        [tuple, TupleCallable],                                
+        [dict, DictCallable],
+        [Any, identity],])
+
+
 # In[50]:
 
 class SugarComposer(DefaultComposer):    
-
     def item(item):
-        if isinstance(item, Callable):
-            return item
-        
-        intermediate_chain = Chain()
-        # Sugar
-        if isinstance(item, set):
-            if pipe(item, map(
-                    partial(flip(isinstance), LambdaType)
-                ), any):
-                raise TypeError("can not chain lambdas in a set.")
-            item = pipe(item, map(lambda x: (x, x,)), OrderedDict)
-        
-        # returned a  keyed 
-        if isinstance(item, dict): 
-            intermediate_chain._tokens = [
-                [juxtapose, [item.values()], {}],
-                [zip, [item.keys()], {}], 
-                [dict, [], {}],
-            ]
-        
-        # juxt a tuple or list of values
-        if isinstance(item, (list, tuple,)):
-            intermediate_chain._tokens = [
-                [juxtapose, [item], {}],
-                [type(item), [], {}], # assure type
-            ]
-        
-        return intermediate_chain.compose
+        return multiple_dispatch(item)    
     
     @classmethod
     def call(cls, tokens, *args, **kwargs):
