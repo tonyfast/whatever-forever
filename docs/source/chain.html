@@ -42,7 +42,7 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [1]:</div>
+<div class="prompt input_prompt">In [15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span/><span class="kn">from</span> <span class="nn">.callables</span> <span class="k">import</span> <span class="n">SetCallable</span><span class="p">,</span> <span class="n">TupleCallable</span><span class="p">,</span> <span class="n">ListCallable</span><span class="p">,</span> <span class="n">DictCallable</span><span class="p">,</span> <span class="n">Dispatch</span>
@@ -52,9 +52,9 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 <span class="kn">from</span> <span class="nn">toolz.curried</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">complement</span><span class="p">,</span> <span class="n">compose</span><span class="p">,</span> <span class="n">concat</span><span class="p">,</span> <span class="n">do</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> 
     <span class="n">first</span><span class="p">,</span> <span class="n">flip</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="n">juxt</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> 
-    <span class="n">pipe</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">valmap</span><span class="p">,</span>
+    <span class="n">peek</span><span class="p">,</span> <span class="n">pipe</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">valmap</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">LambdaType</span><span class="p">,</span> <span class="n">MethodType</span>
 
@@ -79,7 +79,7 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [2]:</div>
+<div class="prompt input_prompt">In [16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span/><span class="k">def</span> <span class="nf">import_functions</span><span class="p">(</span><span class="n">module</span><span class="p">):</span> 
@@ -96,7 +96,7 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [3]:</div>
+<div class="prompt input_prompt">In [17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span/><span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
@@ -108,21 +108,18 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
         <span class="p">],</span> <span class="nb">map</span><span class="p">(</span><span class="n">import_functions</span><span class="p">),</span> <span class="n">concat</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">juxt</span><span class="p">(</span>
             <span class="n">partial</span><span class="p">(</span><span class="n">flip</span><span class="p">(</span><span class="nb">getattr</span><span class="p">),</span> <span class="s1">'__name__'</span><span class="p">),</span> <span class="n">identity</span>
         <span class="p">)),</span> <span class="nb">list</span><span class="p">,</span>  <span class="nb">reversed</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">item</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">item</span>
     
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">attr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">keyed_methods</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">keyed_methods</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
     
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
         <span class="k">return</span> <span class="n">tokens</span>
     
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">composer</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">composer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">compose</span><span class="p">(</span><span class="o">*</span><span class="n">pipe</span><span class="p">(</span>
             <span class="n">tokens</span><span class="p">,</span> <span class="nb">reversed</span><span class="p">,</span> <span class="nb">filter</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="nb">map</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">arg</span><span class="p">:</span> <span class="n">partial</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="n">arg</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">arg</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">else</span> <span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -137,7 +134,7 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [4]:</div>
+<div class="prompt input_prompt">In [18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span/><span class="k">class</span> <span class="nc">Repr</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -152,11 +149,11 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [6]:</div>
+<div class="prompt input_prompt">In [55]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span/><span class="k">class</span> <span class="nc">Chain</span><span class="p">(</span><span class="n">Repr</span><span class="p">):</span> 
-    <span class="n">_composer</span> <span class="o">=</span> <span class="n">DefaultComposer</span>
+    <span class="n">_composer</span> <span class="o">=</span> <span class="n">DefaultComposer</span><span class="p">()</span>
     
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -191,9 +188,9 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
     
     <span class="k">def</span> <span class="nf">_tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">composer</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">composer</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">Callable</span><span class="p">):</span>
-            <span class="n">attr</span> <span class="o">=</span> <span class="p">[[</span><span class="n">attr</span><span class="p">,</span> <span class="p">[],</span> <span class="p">()]]</span>
-        <span class="k">return</span> <span class="n">attr</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">Callable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">peek</span><span class="p">(</span><span class="n">attr</span><span class="p">),</span> <span class="n">Iterable</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">attr</span>
+        <span class="k">return</span> <span class="p">[[</span><span class="n">attr</span><span class="p">,</span> <span class="p">[],</span> <span class="p">()]]</span>
 
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="sd">"""Apply the attribute getter</span>
@@ -292,37 +289,26 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [ ]:</div>
+<div class="prompt input_prompt">In [68]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span/><span class="n">multiple_dispatch</span> <span class="o">=</span> <span class="n">Dispatch</span><span class="p">([</span>        
+<div class=" highlight hl-ipython3"><pre><span/><span class="k">class</span> <span class="nc">SugarComposer</span><span class="p">(</span><span class="n">DefaultComposer</span><span class="p">):</span>    
+    <span class="n">multiple_dispatch</span> <span class="o">=</span> <span class="n">Dispatch</span><span class="p">([</span>
+        <span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">identity</span><span class="p">],</span>
         <span class="p">[</span><span class="nb">set</span><span class="p">,</span> <span class="n">SetCallable</span><span class="p">],</span>
         <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">ListCallable</span><span class="p">],</span>                
         <span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">TupleCallable</span><span class="p">],</span>                                
         <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">DictCallable</span><span class="p">],</span>
         <span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">identity</span><span class="p">],])</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [50]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span/><span class="k">class</span> <span class="nc">SugarComposer</span><span class="p">(</span><span class="n">DefaultComposer</span><span class="p">):</span>    
-    <span class="k">def</span> <span class="nf">item</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">multiple_dispatch</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>    
     
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">tokens</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiple_dispatch</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>    
+    
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">map</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span> <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">kwargs</span><span class="p">]</span>
-            <span class="k">return</span> <span class="n">DefaultComposer</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-        <span class="k">return</span> <span class="n">DefaultComposer</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -332,7 +318,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [55]:</div>
+<div class="prompt input_prompt">In [58]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span/><span class="k">def</span> <span class="nf">juxtapose</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span> 
@@ -341,7 +327,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 <span class="k">class</span> <span class="nc">_X</span><span class="p">(</span><span class="n">Chain</span><span class="p">):</span>
     <span class="sd">"""Shorthand for `Chain` where `_X.f is Chain.value`.  Typographically dense.</span>
 <span class="sd">    """</span>
-    <span class="n">_composer</span> <span class="o">=</span> <span class="n">SugarComposer</span>
+    <span class="n">_composer</span> <span class="o">=</span> <span class="n">SugarComposer</span><span class="p">()</span>
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Callable</span><span class="p">:</span>
@@ -380,7 +366,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [56]:</div>
+<div class="prompt input_prompt">In [59]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span/><span class="k">def</span> <span class="nf">getitem</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span> 
@@ -390,16 +376,13 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
     <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">ThisComposer</span><span class="p">(</span><span class="n">DefaultComposer</span><span class="p">):</span> 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">item</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[[</span><span class="n">getitem</span><span class="p">,</span> <span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="p">{}]]</span>
     
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">attr</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[[</span><span class="n">getattr_</span><span class="p">,</span> <span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="p">{}]]</span>
     
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">"""Add args and kwargs to the tokens.</span>
 <span class="sd">        """</span>
         <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">evaluate</span><span class="p">,</span> <span class="p">[</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">],</span> <span class="p">{}])</span>
@@ -413,11 +396,11 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [54]:</div>
+<div class="prompt input_prompt">In [60]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span/><span class="k">class</span> <span class="nc">this</span><span class="p">(</span><span class="n">Chain</span><span class="p">):</span> 
-    <span class="n">_composer</span> <span class="o">=</span> <span class="n">ThisComposer</span>
+    <span class="n">_composer</span> <span class="o">=</span> <span class="n">ThisComposer</span><span class="p">()</span>
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain_type</span><span class="o">=</span><span class="n">_X</span><span class="p">):</span> <span class="k">return</span> <span class="n">chain_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
@@ -486,19 +469,6 @@ using the attribute created a nice typographic layout.</p>
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [ ]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span/> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div>
     </div>
   </div>

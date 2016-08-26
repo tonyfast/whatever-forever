@@ -20,7 +20,7 @@
 
 # The only required import is `toolz` from pypi
 
-# In[1]:
+# In[15]:
 
 from .callables import SetCallable, TupleCallable, ListCallable, DictCallable, Dispatch
 import builtins
@@ -29,9 +29,9 @@ import toolz.curried
 from toolz.curried import (
     complement, compose, concat, do, filter, 
     first, flip, identity, juxt, last, map, partial, 
-    pipe, second, valmap,
+    peek, pipe, second, valmap,
 )
-from typing import Any, Callable
+from typing import Any, Callable, Iterable
 from collections import OrderedDict
 from types import LambdaType, MethodType
 
@@ -42,7 +42,7 @@ __all__ = ['Chain', '_X', 'this',]
 # Chain([1,2]).map(lambda x: x**2).list().value()
 # ```
 
-# In[2]:
+# In[16]:
 
 def import_functions(module): 
     return pipe(
@@ -51,7 +51,7 @@ def import_functions(module):
     )
 
 
-# In[3]:
+# In[17]:
 
 def evaluate(args, kwargs, fn):
     return fn(*args, **kwargs)
@@ -62,21 +62,18 @@ class DefaultComposer(object):
         ], map(import_functions), concat, map(juxt(
             partial(flip(getattr), '__name__'), identity
         )), list,  reversed, dict)
-    @staticmethod
-    def item(item):
+    
+    def item(self, item):
         return item
     
-    @classmethod
-    def attr(cls, item):
-        return cls.keyed_methods.get(item)
+    def attr(self, item):
+        return self.keyed_methods.get(item)
     
-    @staticmethod
-    def call(tokens, *args, **kwargs):
+    def call(self, tokens, *args, **kwargs):
         tokens[-1][1:] = args, kwargs
         return tokens
     
-    @staticmethod
-    def composer(tokens):
+    def composer(self, tokens):
         return compose(*pipe(
             tokens, reversed, filter(first), map(
                 lambda arg: partial(arg[0], *arg[1], **arg[2]) if any(arg[1:]) else arg[0]
@@ -84,17 +81,17 @@ class DefaultComposer(object):
         ))
 
 
-# In[4]:
+# In[18]:
 
 class Repr(object):
     def __repr__(self):
         return self.value().__repr__()
 
 
-# In[6]:
+# In[55]:
 
 class Chain(Repr): 
-    _composer = DefaultComposer
+    _composer = DefaultComposer()
     
     def __init__(
         self,
@@ -129,9 +126,9 @@ class Chain(Repr):
     
     def _tokenize(self, composer, attr):
         attr = composer(attr)
-        if isinstance(attr, Callable):
-            attr = [[attr, [], ()]]
-        return attr
+        if not isinstance(attr, Callable) and isinstance(attr, Iterable) and isinstance(peek(attr), Iterable):
+            return attr
+        return [[attr, [], ()]]
 
     def __getattr__(self, attr):
         """Apply the attribute getter
@@ -193,31 +190,28 @@ class Chain(Repr):
 # this().set_index('A')[['B', 'D']].f
 # ```
 
-# In[ ]:
+# In[68]:
 
-multiple_dispatch = Dispatch([        
+class SugarComposer(DefaultComposer):    
+    multiple_dispatch = Dispatch([
+        [Callable, identity],
         [set, SetCallable],
         [list, ListCallable],                
         [tuple, TupleCallable],                                
         [dict, DictCallable],
         [Any, identity],])
-
-
-# In[50]:
-
-class SugarComposer(DefaultComposer):    
-    def item(item):
-        return multiple_dispatch(item)    
     
-    @classmethod
-    def call(cls, tokens, *args, **kwargs):
+    def item(self, item):
+        return self.multiple_dispatch(item)    
+    
+    def call(self, tokens, *args, **kwargs):
         if tokens[-1][0] in [map]:
             if kwargs and not args: args = [kwargs]
-            return DefaultComposer.call(tokens, cls.item(args[0]))
-        return DefaultComposer.call(tokens, *args, **kwargs)
+            return super().call(tokens, self.item(args[0]))
+        return super().call(tokens, *args, **kwargs)
 
 
-# In[55]:
+# In[58]:
 
 def juxtapose(func, x): 
     return juxt(*func)(x)
@@ -225,7 +219,7 @@ def juxtapose(func, x):
 class _X(Chain):
     """Shorthand for `Chain` where `_X.f is Chain.value`.  Typographically dense.
     """
-    _composer = SugarComposer
+    _composer = SugarComposer()
     
     @property
     def f(self)->Callable:
@@ -257,7 +251,7 @@ class _X(Chain):
     def end(self): self.value
 
 
-# In[56]:
+# In[59]:
 
 def getitem(item, obj): 
     return obj[item]
@@ -266,26 +260,23 @@ def getattr_(item, obj):
     return getattr(obj, item)
 
 class ThisComposer(DefaultComposer): 
-    @staticmethod
-    def item(item):
+    def item(self, item):
         return [[getitem, [item], {}]]
     
-    @staticmethod
-    def attr(item):
+    def attr(self, item):
         return [[getattr_, [item], {}]]
     
-    @staticmethod
-    def call(tokens, *args, **kwargs):
+    def call(self, tokens, *args, **kwargs):
         """Add args and kwargs to the tokens.
         """
         tokens.append([evaluate, [args, kwargs], {}])
         return tokens
 
 
-# In[54]:
+# In[60]:
 
 class this(Chain): 
-    _composer = ThisComposer
+    _composer = ThisComposer()
     
     @property
     def chain(self, chain_type=_X): return chain_type(self.value())
@@ -359,8 +350,3 @@ class this(Chain):
 #     __extend a chain__ `Chain([1,2,3]) | map(lambda x: x**2) | list`
 #     
 #     __evaluate a chain__ `Chain([1,2,3]) | map(lambda x: x**2) > list`
-
-# In[ ]:
-
-
-

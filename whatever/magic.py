@@ -87,4 +87,5 @@ def magical(name, method, lang=None, **kwargs):
         partial(wraps_magic, method, **kwargs),          
         magic_kind='cell', magic_name=name
     )
+    return method
 
