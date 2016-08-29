@@ -2,7 +2,6 @@
 .. code:: python
 
     from whatever import *
-    from toolz.curried import *
 
 ``whatever-forever``
 ====================

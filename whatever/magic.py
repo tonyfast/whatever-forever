@@ -83,9 +83,10 @@ def magical(name, method, lang=None, **kwargs):
             """.format(lang, name), 
              display.Javascript, display.display,
         )
+    wrapped_method = partial(wraps_magic, method, **kwargs)
     get_ipython().register_magic_function(
-        partial(wraps_magic, method, **kwargs),          
+        wrapped_method,          
         magic_kind='cell', magic_name=name
     )
-    return method
+    return wrapped_method
 

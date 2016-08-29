@@ -107,11 +107,12 @@ layout: index
 <span class="s2">            """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lang</span><span class="p">,</span> <span class="n">name</span><span class="p">),</span> 
              <span class="n">display</span><span class="o">.</span><span class="n">Javascript</span><span class="p">,</span> <span class="n">display</span><span class="o">.</span><span class="n">display</span><span class="p">,</span>
         <span class="p">)</span>
+    <span class="n">wrapped_method</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">wraps_magic</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">get_ipython</span><span class="p">()</span><span class="o">.</span><span class="n">register_magic_function</span><span class="p">(</span>
-        <span class="n">partial</span><span class="p">(</span><span class="n">wraps_magic</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span>          
+        <span class="n">wrapped_method</span><span class="p">,</span>          
         <span class="n">magic_kind</span><span class="o">=</span><span class="s1">'cell'</span><span class="p">,</span> <span class="n">magic_name</span><span class="o">=</span><span class="n">name</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">method</span>
+    <span class="k">return</span> <span class="n">wrapped_method</span>
 </pre></div>
 
 </div>

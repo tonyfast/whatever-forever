@@ -1,12 +1,26 @@
 tricks:
+# Compile the script and rerun tests.
 - watchdog.tricks.ShellCommandTrick:
     patterns: 
-    - "*.ipynb"
+    - "*/whatever/*.ipynb"
     ignore_patterns: 
-        - docs
         - '*/.~*.ipynb'
         - '*/.ipynb_checkpoints*'
     shell_command: |
         jupyter nbconvert --to script "${watch_src_path}" && 
         python automate.py && 
-        py.test
+        py.test 
+        
+# Only test the test
+- watchdog.tricks.ShellCommandTrick:
+    patterns: 
+    - "*/docs/*.ipynb"
+    - "*/docs/**/*.ipynb"
+    ignore_patterns: 
+        - '*/.~*.ipynb'
+        - '*/.ipynb_checkpoints*'
+    # append yaml front matter and liquid tags for jekyll to compile
+    # test the file that changes.  every piece of code should be tested in the 
+    # jekyll site.
+    shell_command: |
+        python automate.py && py.test "${watch_src_path}"
