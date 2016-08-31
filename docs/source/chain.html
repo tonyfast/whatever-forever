@@ -45,7 +45,7 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 <div class="prompt input_prompt">In [26]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span/><span class="kn">from</span> <span class="nn">.callables</span> <span class="k">import</span> <span class="n">SetCallable</span><span class="p">,</span> <span class="n">TupleCallable</span><span class="p">,</span> <span class="n">ListCallable</span><span class="p">,</span> <span class="n">DictCallable</span><span class="p">,</span> <span class="n">Dispatch</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">.callables</span> <span class="k">import</span> <span class="n">SetCallable</span><span class="p">,</span> <span class="n">TupleCallable</span><span class="p">,</span> <span class="n">ListCallable</span><span class="p">,</span> <span class="n">DictCallable</span><span class="p">,</span> <span class="n">Dispatch</span>
 <span class="kn">import</span> <span class="nn">builtins</span>
 <span class="kn">import</span> <span class="nn">operator</span>
 <span class="kn">import</span> <span class="nn">toolz.curried</span>
@@ -71,7 +71,7 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div class="highlight"><pre><span/><span class="n">Chain</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">list</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><span class="n">Chain</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">list</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -82,7 +82,7 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 <div class="prompt input_prompt">In [27]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span/><span class="k">def</span> <span class="nf">import_functions</span><span class="p">(</span><span class="n">module</span><span class="p">):</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">import_functions</span><span class="p">(</span><span class="n">module</span><span class="p">):</span> 
     <span class="k">return</span> <span class="n">pipe</span><span class="p">(</span>
         <span class="n">module</span><span class="p">,</span> <span class="nb">dir</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="nb">getattr</span><span class="p">,</span> <span class="n">module</span><span class="p">)),</span>
         <span class="nb">filter</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">flip</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">),</span> <span class="s1">'__name__'</span><span class="p">)),</span>
@@ -99,7 +99,7 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 <div class="prompt input_prompt">In [28]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span/><span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">DefaultComposer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -137,7 +137,7 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 <div class="prompt input_prompt">In [29]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span/><span class="k">class</span> <span class="nc">Repr</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Repr</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="o">.</span><span class="n">__repr__</span><span class="p">()</span>
 </pre></div>
@@ -152,7 +152,7 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 <div class="prompt input_prompt">In [30]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span/><span class="k">class</span> <span class="nc">Chain</span><span class="p">(</span><span class="n">Repr</span><span class="p">):</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Chain</span><span class="p">(</span><span class="n">Repr</span><span class="p">):</span> 
     <span class="n">_composer</span> <span class="o">=</span> <span class="n">DefaultComposer</span><span class="p">()</span>
     
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
@@ -283,7 +283,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 <blockquote><p><code>this</code> is a modified chain that can access items and attributes.</p>
 <p>Most frequently, the <code>f</code> or <code>value</code> must be called as a function closure.</p>
 </blockquote>
-<div class="highlight"><pre><span/><span class="n">this</span><span class="p">()</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'A'</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">f</span>
+<div class="highlight"><pre><span></span><span class="n">this</span><span class="p">()</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'A'</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">f</span>
 <span class="n">this</span><span class="p">()</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'A'</span><span class="p">)[[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">]]</span><span class="o">.</span><span class="n">f</span>
 </pre></div>
 
@@ -295,7 +295,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 <div class="prompt input_prompt">In [31]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span/><span class="k">class</span> <span class="nc">SugarComposer</span><span class="p">(</span><span class="n">DefaultComposer</span><span class="p">):</span>    
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">SugarComposer</span><span class="p">(</span><span class="n">DefaultComposer</span><span class="p">):</span>    
     <span class="n">multiple_dispatch</span> <span class="o">=</span> <span class="n">Dispatch</span><span class="p">([</span>
         <span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">identity</span><span class="p">],</span>
         <span class="p">[</span><span class="nb">set</span><span class="p">,</span> <span class="n">SetCallable</span><span class="p">],</span>
@@ -324,7 +324,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 <div class="prompt input_prompt">In [32]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span/><span class="k">def</span> <span class="nf">juxtapose</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">juxtapose</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span> 
     <span class="k">return</span> <span class="n">juxt</span><span class="p">(</span><span class="o">*</span><span class="n">func</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">_X</span><span class="p">(</span><span class="n">Chain</span><span class="p">):</span>
@@ -369,7 +369,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 <div class="prompt input_prompt">In [33]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span/><span class="k">def</span> <span class="nf">getitem</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getitem</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span> 
     <span class="k">return</span> <span class="n">obj</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
 
 <span class="k">def</span> <span class="nf">getattr_</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
@@ -399,7 +399,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 <div class="prompt input_prompt">In [63]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span/><span class="k">class</span> <span class="nc">this</span><span class="p">(</span><span class="n">Chain</span><span class="p">):</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">this</span><span class="p">(</span><span class="n">Chain</span><span class="p">):</span> 
     <span class="n">_composer</span> <span class="o">=</span> <span class="n">ThisComposer</span><span class="p">()</span>
     
     <span class="nd">@property</span>
@@ -449,16 +449,16 @@ enhances code prediction while developing in the notebook.</p>
 <h2 id="History">History<a class="anchor-link" href="#History">¶</a></h2><ol>
 <li><p>Design an API that mimics <a href="http://underscorejs.org/#chain"><code>chain</code> from <code>underscorejs</code></a>.  This 
 includes the <code>value</code> function that evaluates that <code>chain</code>.  <code>Chain</code> could only use <code>builtins</code> and <code>toolz.curried</code>.</p>
-<div class="highlight"><pre><span/><span class="n">Chain</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><span class="n">Chain</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
 </pre></div>
 <p><code>value</code> can take args and kwargs to apply a different context to the functions.</p>
-<div class="highlight"><pre><span/><span class="n">c</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
  <span class="n">c</span><span class="o">.</span><span class="n">value</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
 </pre></div>
 </li>
 <li><p>Extend the API to functions in the global namespace using the <code>__getitem__</code> method.  Chaining functions
 using the attribute created a nice typographic layout.</p>
-<div class="highlight"><pre><span/><span class="n">Chain</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])[</span>
+<div class="highlight"><pre><span></span><span class="n">Chain</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])[</span>
      <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
  <span class="p">]</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
 </pre></div>

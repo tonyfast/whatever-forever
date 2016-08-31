@@ -44,7 +44,7 @@ for the_docs in [
 layout: index
 ---
 """ + ("{}" if 'index.ipynb' == fn else """{{% raw %}}{}{{% endraw %}}""").format(
-                    q('body').html())
+                    q('body').html(method='html'))
             )
 
 
