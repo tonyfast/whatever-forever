@@ -1,50 +1,14 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[6]:
 
 from collections import OrderedDict
-from toolz.curried import flip, identity, juxt, map, partial, pipe, valmap
+from toolz.curried import curry, flip, identity, juxt, map, partial, pipe, valmap
 from types import LambdaType
 from typing import Iterable, Any
 
 __all__ = ['Dispatch', 'DictCallable', 'TupleCallable', 'ListCallable', 'SetCallable']
-
-
-# In[2]:
-
-class Dispatch(OrderedDict):
-    """An object that provides multiple dispatch when it is called.
-    """
-    def __init__(self, args=[], catch=None):
-        super().__init__(args)
-        if catch:
-            self[Any] = catch
-    def __call__(self, *args, **kwargs):
-        for types, fn in self.items():
-            if not isinstance(types, Iterable):
-                types = tuple([types])
-            if len(args) == len(types):
-                for arg, type_ in zip(args, types):
-                    if type_ != Any and not isinstance(arg, type_): break
-                else:
-                    return fn(*args, **kwargs)
-        raise TypeError("Type(s) not found")
-
-
-# In[3]:
-
-class Condictional(OrderedDict):
-    """An object that provides multiple dispatch when it is called.
-    """
-    def __init__(self, args=[], catch=identity):
-        super().__init__(args)
-        self[lambda *args, **kwargs: True] = catch
-        
-    def __call__(self, *args, **kwargs):
-        for condition, fn in self.items():
-            if condition(*args, **kwargs):
-                return fn(*args, **kwargs)
 
 
 # In[4]:
@@ -54,6 +18,49 @@ class DictCallable(dict):
         return valmap(
             lambda x: x(*args, **kwargs), self
         )
+
+
+# In[44]:
+
+class Condictional(OrderedDict):
+    """An object that provides multiple dispatch when it is called.
+    """
+    def key(self, x, *args, **kwargs)->bool: 
+        return x(*args, **kwargs)
+    
+    def __init__(self, args=[], default=None, key=None):
+        super().__init__(args)
+        self.default = default
+        if key:
+            self.key = key
+        
+    def __call__(self, *args, **kwargs):
+        for key, value in self.items():
+            if self.key(key, *args, **kwargs):
+                return value(*args, **kwargs)
+        if self.default:
+            return self.default(*args, **kwargs)
+        raise KeyError("No conditions satisfied")
+
+
+# In[27]:
+
+class Dispatch(Condictional):
+    """An object that provides multiple dispatch when it is called.
+    """
+    def key(self, key, *args, **kwargs):
+        if not isinstance(key, Iterable):
+            key = tuple([key])
+        if len(args) == len(key):
+            return all(
+                isinstance(arg, types) for arg, types in zip(args, key)
+                if isinstance(types, Iterable) or types != Any
+            )
+        return False
+        
+    def __init__(self, args=[], default=None):
+        super().__init__(args)
+        self.default = default
 
 
 # In[5]:

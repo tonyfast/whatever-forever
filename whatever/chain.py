@@ -20,7 +20,7 @@
 
 # The only required import is `toolz` from pypi
 
-# In[15]:
+# In[26]:
 
 from .callables import SetCallable, TupleCallable, ListCallable, DictCallable, Dispatch
 import builtins
@@ -28,8 +28,8 @@ import operator
 import toolz.curried
 from toolz.curried import (
     complement, compose, concat, do, filter, 
-    first, flip, identity, juxt, last, map, partial, 
-    peek, pipe, second, valmap,
+    first, flip, identity, juxt, last, map, merge, partial, 
+    peek, pipe, second, valfilter, valmap, keyfilter,
 )
 from typing import Any, Callable, Iterable
 from collections import OrderedDict
@@ -42,7 +42,7 @@ __all__ = ['Chain', '_X', 'this',]
 # Chain([1,2]).map(lambda x: x**2).list().value()
 # ```
 
-# In[16]:
+# In[27]:
 
 def import_functions(module): 
     return pipe(
@@ -51,7 +51,7 @@ def import_functions(module):
     )
 
 
-# In[17]:
+# In[28]:
 
 def evaluate(args, kwargs, fn):
     return fn(*args, **kwargs)
@@ -61,7 +61,7 @@ class DefaultComposer(object):
             toolz.curried, builtins, operator
         ], map(import_functions), concat, map(juxt(
             partial(flip(getattr), '__name__'), identity
-        )), list,  reversed, dict)
+        )), list,  reversed, dict, keyfilter(compose(str.islower, first)), valfilter(callable))
     
     def item(self, item):
         return item
@@ -81,14 +81,14 @@ class DefaultComposer(object):
         ))
 
 
-# In[18]:
+# In[29]:
 
 class Repr(object):
     def __repr__(self):
         return self.value().__repr__()
 
 
-# In[55]:
+# In[30]:
 
 class Chain(Repr): 
     _composer = DefaultComposer()
@@ -163,6 +163,9 @@ class Chain(Repr):
     @property
     def compose(self):
         return self._composer.composer(self._tokens)
+    
+    def __dir__(self):
+        return self._composer.keyed_methods.keys()
 
 
 # ```
@@ -190,7 +193,7 @@ class Chain(Repr):
 # this().set_index('A')[['B', 'D']].f
 # ```
 
-# In[68]:
+# In[31]:
 
 class SugarComposer(DefaultComposer):    
     multiple_dispatch = Dispatch([
@@ -211,7 +214,7 @@ class SugarComposer(DefaultComposer):
         return super().call(tokens, *args, **kwargs)
 
 
-# In[58]:
+# In[32]:
 
 def juxtapose(func, x): 
     return juxt(*func)(x)
@@ -246,12 +249,9 @@ class _X(Chain):
         """Filter values that are true.
         """
         return self.copy().filter(self._composer.item(f))
-    
-    @property
-    def end(self): self.value
 
 
-# In[59]:
+# In[33]:
 
 def getitem(item, obj): 
     return obj[item]
@@ -273,7 +273,7 @@ class ThisComposer(DefaultComposer):
         return tokens
 
 
-# In[60]:
+# In[63]:
 
 class this(Chain): 
     _composer = ThisComposer()
@@ -283,6 +283,8 @@ class this(Chain):
     
     @property
     def f(self): return self.value
+    
+    def __dir__(self): return []
 
 
 # # About the design
