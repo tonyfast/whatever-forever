@@ -1,0 +1,3 @@
+{% extends "full.tpl" %}
+{% block header %}{{super()|replace('<title>build_nbconvert_templates</title>', '<title></title>')}}{% endblock %}
+{% block body %}{% raw %}{{content}}{% endraw %}{% endblock %}

@@ -20,7 +20,7 @@
 
 # The only required import is `toolz` from pypi
 
-# In[26]:
+# In[1]:
 
 from .callables import SetCallable, TupleCallable, ListCallable, DictCallable, Dispatch
 import builtins
@@ -42,7 +42,7 @@ __all__ = ['Chain', '_X', 'this',]
 # Chain([1,2]).map(lambda x: x**2).list().value()
 # ```
 
-# In[27]:
+# In[2]:
 
 def import_functions(module): 
     return pipe(
@@ -51,7 +51,7 @@ def import_functions(module):
     )
 
 
-# In[28]:
+# In[3]:
 
 def evaluate(args, kwargs, fn):
     return fn(*args, **kwargs)
@@ -81,14 +81,14 @@ class DefaultComposer(object):
         ))
 
 
-# In[29]:
+# In[4]:
 
 class Repr(object):
     def __repr__(self):
         return self.value().__repr__()
 
 
-# In[30]:
+# In[38]:
 
 class Chain(Repr): 
     _composer = DefaultComposer()
@@ -165,7 +165,10 @@ class Chain(Repr):
         return self._composer.composer(self._tokens)
     
     def __dir__(self):
-        return self._composer.keyed_methods.keys()
+        return concat([
+                self._composer.keyed_methods.keys(),
+                super().__dir__(),
+            ])
 
 
 # ```
@@ -193,7 +196,7 @@ class Chain(Repr):
 # this().set_index('A')[['B', 'D']].f
 # ```
 
-# In[31]:
+# In[39]:
 
 class SugarComposer(DefaultComposer):    
     multiple_dispatch = Dispatch([
@@ -214,7 +217,7 @@ class SugarComposer(DefaultComposer):
         return super().call(tokens, *args, **kwargs)
 
 
-# In[32]:
+# In[40]:
 
 def juxtapose(func, x): 
     return juxt(*func)(x)
@@ -251,7 +254,7 @@ class _X(Chain):
         return self.copy().filter(self._composer.item(f))
 
 
-# In[33]:
+# In[34]:
 
 def getitem(item, obj): 
     return obj[item]
@@ -273,7 +276,7 @@ class ThisComposer(DefaultComposer):
         return tokens
 
 
-# In[63]:
+# In[35]:
 
 class this(Chain): 
     _composer = ThisComposer()
@@ -282,9 +285,16 @@ class this(Chain):
     def chain(self, chain_type=_X): return chain_type(self.value())
     
     @property
-    def f(self): return self.value
+    def f(self): 
+        return self.value
     
-    def __dir__(self): return []
+    def __dir__(self): 
+        return ['f', 'value', 'chain']
+
+
+# In[36]:
+
+c = _X()
 
 
 # # About the design

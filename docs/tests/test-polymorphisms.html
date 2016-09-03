@@ -1,7 +1,8 @@
 ---
-layout: index
+layout: base
 ---
-{% raw %}
+
+<body>
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
@@ -10,16 +11,16 @@ layout: index
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Polymorphisms">Polymorphisms<a class="anchor-link" href="#Polymorphisms">¶</a></h1>
+<h1 id="Polymorphisms">Polymorphisms<a class="anchor-link" href="#Polymorphisms">&#182;</a></h1>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [1]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">"""setup"""</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">&quot;&quot;&quot;setup&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">whatever</span> <span class="k">import</span> <span class="o">*</span> 
 <span class="kn">from</span> <span class="nn">toolz.curried</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span>
@@ -40,14 +41,14 @@ layout: index
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Chain">Chain<a class="anchor-link" href="#Chain">¶</a></h2><p>The base class to compose fucntions.</p>
+<h2 id="Chain">Chain<a class="anchor-link" href="#Chain">&#182;</a></h2><p>The base class to compose fucntions.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [2]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nd">@curry</span>
@@ -62,10 +63,10 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [3]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">"""test_simple"""</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">&quot;&quot;&quot;test_simple&quot;&quot;&quot;</span>
 <span class="n">f</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">list</span>
 <span class="n">compare</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">compose</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">range</span><span class="p">),</span> <span class="mi">20</span><span class="p">)</span>
 <span class="n">f</span>
@@ -94,7 +95,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [4]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">list</span>
@@ -125,7 +126,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [5]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">(</span><span class="mi">10</span><span class="p">)[</span><span class="nb">range</span><span class="p">](</span><span class="mi">5</span><span class="p">)[</span><span class="nb">list</span><span class="p">]</span>
@@ -159,13 +160,13 @@ layout: index
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Shorthand">Shorthand<a class="anchor-link" href="#Shorthand">¶</a></h2>
+<h2 id="Shorthand">Shorthand<a class="anchor-link" href="#Shorthand">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [6]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">compose</span><span class="o">.</span><span class="n">funcs</span>
@@ -194,7 +195,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [7]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
@@ -226,7 +227,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [8]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
@@ -258,7 +259,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [9]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
@@ -290,7 +291,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [10]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
@@ -325,7 +326,7 @@ layout: index
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Complex-Arguments">Complex Arguments<a class="anchor-link" href="#Complex-Arguments">¶</a></h2>
+<h2 id="Complex-Arguments">Complex Arguments<a class="anchor-link" href="#Complex-Arguments">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -334,13 +335,13 @@ layout: index
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Lists">Lists<a class="anchor-link" href="#Lists">¶</a></h1>
+<h1 id="Lists">Lists<a class="anchor-link" href="#Lists">&#182;</a></h1>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [11]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="p">[[</span><span class="nb">sum</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">len</span><span class="p">]]</span>
@@ -371,7 +372,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [12]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="p">[(</span><span class="nb">sum</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">len</span><span class="p">)]</span>
@@ -402,7 +403,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [13]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span> <span class="o">|</span> <span class="p">(</span><span class="nb">sum</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">len</span><span class="p">)</span>
@@ -433,7 +434,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [14]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span> <span class="o">|</span> <span class="p">[</span><span class="nb">sum</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">len</span><span class="p">]</span>
@@ -464,7 +465,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [15]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="p">[[</span><span class="nb">sum</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">len</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">type</span> <span class="o">*</span> <span class="n">do</span><span class="p">(</span><span class="nb">print</span><span class="p">)</span> <span class="o">|</span> <span class="nb">list</span>
@@ -480,9 +481,9 @@ layout: index
 
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;class 'int'&gt;
-&lt;class 'list'&gt;
-&lt;class 'int'&gt;
+<pre>&lt;class &#39;int&#39;&gt;
+&lt;class &#39;list&#39;&gt;
+&lt;class &#39;int&#39;&gt;
 </pre>
 </div>
 </div>
@@ -491,7 +492,7 @@ layout: index
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&lt;class 'int'&gt;, &lt;class 'list'&gt;, &lt;class 'int'&gt;]</pre>
+<pre>[&lt;class &#39;int&#39;&gt;, &lt;class &#39;list&#39;&gt;, &lt;class &#39;int&#39;&gt;]</pre>
 </div>
 
 </div>
@@ -505,16 +506,16 @@ layout: index
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Dict">Dict<a class="anchor-link" href="#Dict">¶</a></h1>
+<h1 id="Dict">Dict<a class="anchor-link" href="#Dict">&#182;</a></h1>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [16]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="p">[{</span><span class="s1">'a'</span><span class="p">:</span> <span class="nb">sum</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">:</span> <span class="nb">len</span><span class="p">}]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="p">[{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">}]</span>
 </pre></div>
 
 </div>
@@ -529,7 +530,7 @@ layout: index
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>{'a': 45, 'b': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 'c': 10}</pre>
+<pre>{&#39;a&#39;: 45, &#39;b&#39;: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], &#39;c&#39;: 10}</pre>
 </div>
 
 </div>
@@ -540,10 +541,10 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [17]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span> <span class="o">|</span> <span class="p">{</span><span class="s1">'a'</span><span class="p">:</span> <span class="nb">sum</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">:</span> <span class="nb">len</span><span class="p">}</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span> <span class="o">|</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">}</span>
 </pre></div>
 
 </div>
@@ -558,7 +559,7 @@ layout: index
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>{'a': 45, 'b': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 'c': 10}</pre>
+<pre>{&#39;a&#39;: 45, &#39;b&#39;: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], &#39;c&#39;: 10}</pre>
 </div>
 
 </div>
@@ -572,13 +573,13 @@ layout: index
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="sets">sets<a class="anchor-link" href="#sets">¶</a></h1>
+<h1 id="sets">sets<a class="anchor-link" href="#sets">&#182;</a></h1>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [18]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="p">[{</span><span class="nb">sum</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">len</span><span class="p">}]</span>
@@ -596,7 +597,7 @@ layout: index
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>{&lt;built-in function len&gt;: 10, &lt;built-in function sum&gt;: 45, &lt;class 'list'&gt;: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}</pre>
+<pre>{&lt;built-in function len&gt;: 10, &lt;built-in function sum&gt;: 45, &lt;class &#39;list&#39;&gt;: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}</pre>
 </div>
 
 </div>
@@ -607,7 +608,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [19]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">list</span> <span class="o">|</span> <span class="p">{</span><span class="nb">sum</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">len</span><span class="p">}</span> <span class="o">|</span> <span class="n">this</span><span class="p">()[</span><span class="nb">sum</span><span class="p">]</span><span class="o">.</span><span class="n">compose</span>
@@ -637,7 +638,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [20]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span> <span class="o">*</span> <span class="nb">range</span> <span class="o">+</span> <span class="nb">bool</span> <span class="p">)</span><span class="o">*</span> <span class="p">{</span><span class="nb">sum</span><span class="p">,</span> <span class="nb">len</span><span class="p">}</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">list</span> 
@@ -667,10 +668,10 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [21]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># will_raise(Chain(10).range.map(range).filter(bool).map({'s': sum, 'l': len}).list)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># will_raise(Chain(10).range.map(range).filter(bool).map({&#39;s&#39;: sum, &#39;l&#39;: len}).list)</span>
 </pre></div>
 
 </div>
@@ -680,11 +681,11 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [22]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span> <span class="o">*</span> <span class="nb">range</span> <span class="o">+</span> <span class="nb">bool</span> <span class="p">)</span> <span class="o">*</span> <span class="p">{</span><span class="s1">'s'</span><span class="p">:</span> <span class="nb">sum</span><span class="p">,</span> <span class="s1">'l'</span><span class="p">:</span> <span class="nb">len</span><span class="p">}</span> <span class="o">|</span> <span class="nb">list</span> 
-<span class="k">assert</span> <span class="n">d</span><span class="o">.</span><span class="n">f</span><span class="p">()</span> <span class="o">==</span> <span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">range</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">({</span><span class="s1">'s'</span><span class="p">:</span> <span class="nb">sum</span><span class="p">,</span> <span class="s1">'l'</span><span class="p">:</span> <span class="nb">len</span><span class="p">})</span><span class="o">.</span><span class="n">list</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span> <span class="o">*</span> <span class="nb">range</span> <span class="o">+</span> <span class="nb">bool</span> <span class="p">)</span> <span class="o">*</span> <span class="p">{</span><span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">}</span> <span class="o">|</span> <span class="nb">list</span> 
+<span class="k">assert</span> <span class="n">d</span><span class="o">.</span><span class="n">f</span><span class="p">()</span> <span class="o">==</span> <span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">range</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">({</span><span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">})</span><span class="o">.</span><span class="n">list</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -694,7 +695,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [23]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span> <span class="o">*</span> <span class="nb">range</span> <span class="o">+</span> <span class="nb">bool</span> <span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="nb">sum</span><span class="p">,</span> <span class="nb">len</span><span class="p">]</span> <span class="o">|</span> <span class="nb">list</span> 
@@ -728,13 +729,13 @@ layout: index
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Values">Values<a class="anchor-link" href="#Values">¶</a></h2>
+<h2 id="Values">Values<a class="anchor-link" href="#Values">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [24]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">list</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
@@ -766,7 +767,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [25]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">list</span><span class="o">.</span><span class="n">f</span><span class="p">()</span>
@@ -798,7 +799,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [26]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">list</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
@@ -830,7 +831,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [27]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">list</span> <span class="o">&gt;</span> <span class="n">identity</span>
@@ -862,7 +863,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [28]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">|</span> <span class="nb">range</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">&gt;</span> <span class="n">identity</span>
@@ -897,13 +898,13 @@ layout: index
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Composition">Composition<a class="anchor-link" href="#Composition">¶</a></h2>
+<h2 id="Composition">Composition<a class="anchor-link" href="#Composition">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [29]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">list</span><span class="o">.</span><span class="n">value</span>
@@ -934,7 +935,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [30]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">list</span><span class="o">.</span><span class="n">f</span>
@@ -965,7 +966,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [31]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">list</span><span class="o">.</span><span class="n">value</span>
@@ -996,7 +997,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [32]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">list</span> <span class="o">&gt;</span> <span class="n">compose</span>
@@ -1027,7 +1028,7 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [33]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">_X</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">|</span> <span class="nb">range</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">&gt;</span> <span class="n">compose</span>
@@ -1061,18 +1062,18 @@ layout: index
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="This">This<a class="anchor-link" href="#This">¶</a></h1>
+<h1 id="This">This<a class="anchor-link" href="#This">&#182;</a></h1>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [34]:</div>
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
     <span class="n">bar</span> <span class="o">=</span> <span class="mi">10</span>
-    <span class="n">baz</span> <span class="o">=</span> <span class="s1">'jump'</span>
+    <span class="n">baz</span> <span class="o">=</span> <span class="s1">&#39;jump&#39;</span>
 <span class="n">this</span><span class="p">(</span><span class="n">Foo</span><span class="p">)</span><span class="o">.</span><span class="n">bar</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 </pre></div>
 
@@ -1099,10 +1100,10 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [35]:</div>
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">this</span><span class="p">({</span><span class="s1">'a'</span><span class="p">:</span> <span class="n">Foo</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">:</span> <span class="s1">'car'</span><span class="p">})[</span><span class="s1">'a'</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">this</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">Foo</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="s1">&#39;car&#39;</span><span class="p">})[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -1128,10 +1129,10 @@ layout: index
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [36]:</div>
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">this</span><span class="p">({</span><span class="s1">'a'</span><span class="p">:</span> <span class="n">Foo</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">:</span> <span class="s1">'car'</span><span class="p">})[</span><span class="s1">'b'</span><span class="p">]</span><span class="o">.</span><span class="n">chain</span> <span class="o">|</span> <span class="nb">str</span><span class="o">.</span><span class="n">upper</span> <span class="o">|</span> <span class="n">interpose</span><span class="p">(</span><span class="s1">'g'</span><span class="p">)</span> <span class="o">|</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">this</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">Foo</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="s1">&#39;car&#39;</span><span class="p">})[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">chain</span> <span class="o">|</span> <span class="nb">str</span><span class="o">.</span><span class="n">upper</span> <span class="o">|</span> <span class="n">interpose</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span>
 </pre></div>
 
 </div>
@@ -1146,7 +1147,7 @@ layout: index
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>'CgAgR'</pre>
+<pre>&#39;CgAgR&#39;</pre>
 </div>
 
 </div>
@@ -1157,4 +1158,5 @@ layout: index
 </div>
     </div>
   </div>
-{% endraw %}
+</body>
+</html>

@@ -1,5 +1,7 @@
 -r requirements.txt
 flake8
 notebook
-nose
+pytest
+pytest-ipynb
+watchdog
 wheel
