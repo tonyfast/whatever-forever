@@ -1,4 +1,3 @@
-
 # coding: utf-8
 
 # In[1]:
@@ -13,6 +12,8 @@ __all__ = ['magical']
 
 # > Evaluate arbitrary variables that can be added to the global context by
 # defining a name.
+
+# {% raw %}
 
 # In[9]:
 
@@ -90,3 +91,6 @@ def magical(name, method, lang=None, **kwargs):
         magic_kind='cell', magic_name=name
     )
     return wrapped_method
+
+
+# {% endraw %}
