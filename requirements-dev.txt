@@ -3,5 +3,6 @@ flake8
 notebook
 pytest
 pytest-ipynb
+autopep8
 watchdog
 wheel

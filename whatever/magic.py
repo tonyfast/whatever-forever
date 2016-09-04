@@ -6,12 +6,13 @@
 from IPython import display, get_ipython
 from IPython.core import magic_arguments
 from typing import Callable
-from toolz.curried import curry, partial, pipe, reduce 
+from toolz.curried import curry, partial, pipe, reduce
 
 __all__ = ['magical']
 
 
-# > Evaluate arbitrary variables that can be added to the global context by defining a name.
+# > Evaluate arbitrary variables that can be added to the global context by
+# defining a name.
 
 # In[9]:
 
@@ -30,17 +31,17 @@ __all__ = ['magical']
     help="""An IPython.display method."""
 )
 def wraps_magic(f, line, cell, **kwargs):
-#     def _preprocess_line(line):    
-#         """I don't understand how I would use this yet."""
-#         if 'assign' in kwargs:
-#             if kwargs['assign']:
-#                 line, cell = line.strip().split(' ',1)
-#         else:
-#             line, cell = ['', line]
-#         return line, cell
+    #     def _preprocess_line(line):
+    #         """I don't understand how I would use this yet."""
+    #         if 'assign' in kwargs:
+    #             if kwargs['assign']:
+    #                 line, cell = line.strip().split(' ',1)
+    #         else:
+    #             line, cell = ['', line]
+    #         return line, cell
 
-#     if not cell:
-#         line, cell = _preprocess_line(line)
+    #     if not cell:
+    #         line, cell = _preprocess_line(line)
 
     args = magic_arguments.parse_argstring(wraps_magic, line.strip())
 
@@ -50,14 +51,13 @@ def wraps_magic(f, line, cell, **kwargs):
         if '.' in args.name or '[' in args.name:
             path = args.name.split('.')
             var = get_ipython().user_ns[path[0]]
-            setattr( reduce(
-                lambda x, y: getattr(x,y) if hasattr(x, y) else x[y],
-                path[1:-1], 
+            setattr(reduce(
+                lambda x, y: getattr(x, y) if hasattr(x, y) else x[y],
+                path[1:-1],
                 var
             ), path[-1], retval)
-        else:   
+        else:
             get_ipython().user_ns[args.name] = retval
-
 
     if args.display:
         disp = kwargs['display'] if 'display' in kwargs else args.display
@@ -65,6 +65,7 @@ def wraps_magic(f, line, cell, **kwargs):
             return display.display(getattr(display, disp)(retval))
         elif isinstance(disp, Callable):
             return disp(retval)
+
 
 @curry
 def magical(name, method, lang=None, **kwargs):
@@ -80,13 +81,12 @@ def magical(name, method, lang=None, **kwargs):
                     }};
                 }}
             );
-            """.format(lang, name), 
+            """.format(lang, name),
              display.Javascript, display.display,
-        )
+             )
     wrapped_method = partial(wraps_magic, method, **kwargs)
     get_ipython().register_magic_function(
-        wrapped_method,          
+        wrapped_method,
         magic_kind='cell', magic_name=name
     )
     return wrapped_method
-

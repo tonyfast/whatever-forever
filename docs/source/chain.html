@@ -1,7 +1,8 @@
 ---
-layout: index
+layout: base
 ---
-{% raw %}
+
+<body>
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
@@ -10,9 +11,7 @@ layout: index
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>It should be easier to construct complicated functions.  Python has named a lot of things, and
-large scale adoption of certain libraries make names meaningful.  <code>Chain</code> is inspired by <code>pytoolz</code>
-and <code>underscorejs</code>.  The <a href="toolz.readthedocs.io"><code>pytoolz</code> documentation does a fantastic describing functional programming</a>.</p>
+<p>It should be easier to construct complicated functions.  Python has named a lot of things, and large scale adoption of certain libraries make names meaningful.  <code>Chain</code> is inspired by <code>pytoolz</code> and <code>underscorejs</code>.  The <a href="toolz.readthedocs.io"><code>pytoolz</code> documentation does a fantastic describing functional programming</a>.</p>
 <p>There are a few functional programming tools in Python ecosystem.  I would up breaking them 
 very quickly after trying them <strong>Or</strong> the didn't work in the Jupyter notebook.</p>
 <p>A <code>Chain</code> is efficient for prototyping and scaling complicated actions.</p>
@@ -42,23 +41,23 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [1]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">.callables</span> <span class="k">import</span> <span class="n">SetCallable</span><span class="p">,</span> <span class="n">TupleCallable</span><span class="p">,</span> <span class="n">ListCallable</span><span class="p">,</span> <span class="n">DictCallable</span><span class="p">,</span> <span class="n">Dispatch</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">whatever.callables</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">SetCallable</span><span class="p">,</span> <span class="n">TupleCallable</span><span class="p">,</span> <span class="n">ListCallable</span><span class="p">,</span> <span class="n">DictCallable</span><span class="p">,</span> <span class="n">Dispatch</span>
+<span class="p">)</span>
 <span class="kn">import</span> <span class="nn">builtins</span>
-<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">operator</span> 
 <span class="kn">import</span> <span class="nn">toolz.curried</span>
 <span class="kn">from</span> <span class="nn">toolz.curried</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">complement</span><span class="p">,</span> <span class="n">compose</span><span class="p">,</span> <span class="n">concat</span><span class="p">,</span> <span class="n">do</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> 
-    <span class="n">first</span><span class="p">,</span> <span class="n">flip</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="n">juxt</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">merge</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> 
-    <span class="n">peek</span><span class="p">,</span> <span class="n">pipe</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">valfilter</span><span class="p">,</span> <span class="n">valmap</span><span class="p">,</span> <span class="n">keyfilter</span><span class="p">,</span>
+    <span class="n">compose</span><span class="p">,</span> <span class="n">concat</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> 
+    <span class="n">first</span><span class="p">,</span> <span class="n">flip</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="n">juxt</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> 
+    <span class="n">peek</span><span class="p">,</span> <span class="n">pipe</span><span class="p">,</span> <span class="n">valfilter</span><span class="p">,</span> <span class="n">keyfilter</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
-<span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">LambdaType</span><span class="p">,</span> <span class="n">MethodType</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Chain'</span><span class="p">,</span> <span class="s1">'_X'</span><span class="p">,</span> <span class="s1">'this'</span><span class="p">,]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Chain&#39;</span><span class="p">,</span> <span class="s1">&#39;_X&#39;</span><span class="p">,</span> <span class="s1">&#39;this&#39;</span><span class="p">,]</span>
 </pre></div>
 
 </div>
@@ -79,13 +78,13 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [2]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">import_functions</span><span class="p">(</span><span class="n">module</span><span class="p">):</span> 
     <span class="k">return</span> <span class="n">pipe</span><span class="p">(</span>
         <span class="n">module</span><span class="p">,</span> <span class="nb">dir</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="nb">getattr</span><span class="p">,</span> <span class="n">module</span><span class="p">)),</span>
-        <span class="nb">filter</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">flip</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">),</span> <span class="s1">'__name__'</span><span class="p">)),</span>
+        <span class="nb">filter</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">flip</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">),</span> <span class="s1">&#39;__name__&#39;</span><span class="p">)),</span>
     <span class="p">)</span>
 </pre></div>
 
@@ -96,18 +95,21 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [3]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">DefaultComposer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="n">keyed_methods</span> <span class="o">=</span> <span class="n">pipe</span><span class="p">([</span>
-            <span class="n">toolz</span><span class="o">.</span><span class="n">curried</span><span class="p">,</span> <span class="n">builtins</span><span class="p">,</span> <span class="n">operator</span>
-        <span class="p">],</span> <span class="nb">map</span><span class="p">(</span><span class="n">import_functions</span><span class="p">),</span> <span class="n">concat</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">juxt</span><span class="p">(</span>
-            <span class="n">partial</span><span class="p">(</span><span class="n">flip</span><span class="p">(</span><span class="nb">getattr</span><span class="p">),</span> <span class="s1">'__name__'</span><span class="p">),</span> <span class="n">identity</span>
-        <span class="p">)),</span> <span class="nb">list</span><span class="p">,</span>  <span class="nb">reversed</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">keyfilter</span><span class="p">(</span><span class="n">compose</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">islower</span><span class="p">,</span> <span class="n">first</span><span class="p">)),</span> <span class="n">valfilter</span><span class="p">(</span><span class="n">callable</span><span class="p">))</span>
+    <span class="n">keyed_methods</span> <span class="o">=</span> <span class="n">pipe</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">toolz</span><span class="o">.</span><span class="n">curried</span><span class="p">,</span> <span class="n">builtins</span><span class="p">,</span> <span class="n">operator</span><span class="p">],</span> 
+        <span class="nb">map</span><span class="p">(</span><span class="n">import_functions</span><span class="p">),</span> <span class="n">concat</span><span class="p">,</span> 
+        <span class="nb">map</span><span class="p">(</span><span class="n">juxt</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">flip</span><span class="p">(</span><span class="nb">getattr</span><span class="p">),</span> <span class="s1">&#39;__name__&#39;</span><span class="p">),</span> <span class="n">identity</span><span class="p">)),</span>
+        <span class="nb">list</span><span class="p">,</span> <span class="nb">reversed</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">keyfilter</span><span class="p">(</span>
+            <span class="n">compose</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">islower</span><span class="p">,</span> <span class="n">first</span><span class="p">)</span>
+        <span class="p">),</span> <span class="n">valfilter</span><span class="p">(</span><span class="n">callable</span><span class="p">)</span>
+    <span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">item</span>
@@ -134,7 +136,7 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [4]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Repr</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -149,7 +151,7 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [38]:</div>
+<div class="prompt input_prompt">In&nbsp;[38]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Chain</span><span class="p">(</span><span class="n">Repr</span><span class="p">):</span> 
@@ -167,9 +169,9 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
         <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
 
     <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-        <span class="sd">"""Compose and evaluate the function.  If no args or kwargs are provided</span>
+        <span class="sd">&quot;&quot;&quot;Compose and evaluate the function.  If no args or kwargs are provided</span>
 <span class="sd">        then the initialized context is used.</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_composer</span><span class="o">.</span><span class="n">composer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tokens</span><span class="p">)</span>
         
         <span class="c1"># If any new arguments have been supplied then use them</span>
@@ -188,21 +190,25 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
     
     <span class="k">def</span> <span class="nf">_tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">composer</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">composer</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">Callable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">peek</span><span class="p">(</span><span class="n">attr</span><span class="p">),</span> <span class="n">Iterable</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">Callable</span><span class="p">)</span> <span class="ow">and</span> 
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> 
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">peek</span><span class="p">(</span><span class="n">attr</span><span class="p">),</span> <span class="n">Iterable</span><span class="p">)</span>
+        <span class="p">):</span>
             <span class="k">return</span> <span class="n">attr</span>
         <span class="k">return</span> <span class="p">[[</span><span class="n">attr</span><span class="p">,</span> <span class="p">[],</span> <span class="p">()]]</span>
 
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="sd">"""Apply the attribute getter</span>
-<span class="sd">        """</span>
+        <span class="sd">&quot;&quot;&quot;Apply the attribute getter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tokens</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tokenize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_composer</span><span class="o">.</span><span class="n">attr</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
     
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="sd">"""Any function in the item can be tokenized.</span>
-<span class="sd">        """</span>
+        <span class="sd">&quot;&quot;&quot;Any function in the item can be tokenized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tokens</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tokenize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_composer</span><span class="o">.</span><span class="n">item</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
         <span class="p">)</span>
@@ -216,8 +222,8 @@ very quickly after trying them <strong>Or</strong> the didn't work in the Jupyte
         <span class="k">return</span> <span class="bp">self</span>
     
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">klass</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">"""Create a new instance of the current chain.  Used for </span>
-<span class="sd">        """</span>
+        <span class="sd">&quot;&quot;&quot;Create a new instance of the current chain.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">chain</span> <span class="o">=</span> <span class="p">(</span><span class="n">klass</span> <span class="k">if</span> <span class="n">klass</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">)(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
         <span class="n">chain</span><span class="o">.</span><span class="n">_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tokens</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">chain</span>
@@ -268,7 +274,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="Some-sweet-ol'-syntactic-sugar-that-looks-like-functional-programming.">Some sweet ol' syntactic sugar that looks like functional programming.<a class="anchor-link" href="#Some-sweet-ol'-syntactic-sugar-that-looks-like-functional-programming.">¶</a></h5><blockquote><p><code>__or__</code></p>
+<h5 id="Some-sweet-ol'-syntactic-sugar-that-looks-like-functional-programming.">Some sweet ol' syntactic sugar that looks like functional programming.<a class="anchor-link" href="#Some-sweet-ol'-syntactic-sugar-that-looks-like-functional-programming.">&#182;</a></h5><blockquote><p><code>__or__</code></p>
 <ul>
 <li>adds a piping method to a chain.  Any functional can be included in the pipe.</li>
 <li>is shorthand for a copy and a an append.</li>
@@ -286,8 +292,8 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 <blockquote><p><code>this</code> is a modified chain that can access items and attributes.</p>
 <p>Most frequently, the <code>f</code> or <code>value</code> must be called as a function closure.</p>
 </blockquote>
-<div class="highlight"><pre><span></span><span class="n">this</span><span class="p">()</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'A'</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">f</span>
-<span class="n">this</span><span class="p">()</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'A'</span><span class="p">)[[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">]]</span><span class="o">.</span><span class="n">f</span>
+<div class="highlight"><pre><span></span><span class="n">this</span><span class="p">()</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">f</span>
+<span class="n">this</span><span class="p">()</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">)[[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">f</span>
 </pre></div>
 
 </div>
@@ -295,7 +301,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [39]:</div>
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">SugarComposer</span><span class="p">(</span><span class="n">DefaultComposer</span><span class="p">):</span>    
@@ -324,15 +330,15 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [40]:</div>
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">juxtapose</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span> 
     <span class="k">return</span> <span class="n">juxt</span><span class="p">(</span><span class="o">*</span><span class="n">func</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">_X</span><span class="p">(</span><span class="n">Chain</span><span class="p">):</span>
-    <span class="sd">"""Shorthand for `Chain` where `_X.f is Chain.value`.  Typographically dense.</span>
-<span class="sd">    """</span>
+    <span class="sd">&quot;&quot;&quot;Shorthand for `Chain` where `_X.f is Chain.value`.  Typographically dense.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_composer</span> <span class="o">=</span> <span class="n">SugarComposer</span><span class="p">()</span>
     
     <span class="nd">@property</span>
@@ -340,25 +346,25 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
     
     <span class="k">def</span> <span class="nf">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-        <span class="sd">"""Extend the current chain.</span>
-<span class="sd">        """</span>
+        <span class="sd">&quot;&quot;&quot;Extend the current chain.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()[</span><span class="n">f</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Any</span><span class="p">:</span>
-        <span class="sd">"""Extend and evaluate the chain.</span>
-<span class="sd">        """</span>
+        <span class="sd">&quot;&quot;&quot;Extend and evaluate the chain.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="n">compose</span><span class="p">:</span> 
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compose</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()[</span><span class="n">f</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
     
     <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-        <span class="sd">"""Apply a map function.</span>
-<span class="sd">        """</span>
+        <span class="sd">&quot;&quot;&quot;Apply a map function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-        <span class="sd">"""Filter values that are true.</span>
-<span class="sd">        """</span>
+        <span class="sd">&quot;&quot;&quot;Filter values that are true.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_composer</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
 </pre></div>
 
@@ -369,7 +375,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [34]:</div>
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getitem</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span> 
@@ -386,8 +392,8 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
         <span class="k">return</span> <span class="p">[[</span><span class="n">getattr_</span><span class="p">,</span> <span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="p">{}]]</span>
     
     <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">"""Add args and kwargs to the tokens.</span>
-<span class="sd">        """</span>
+        <span class="sd">&quot;&quot;&quot;Add args and kwargs to the tokens.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">evaluate</span><span class="p">,</span> <span class="p">[</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">],</span> <span class="p">{}])</span>
         <span class="k">return</span> <span class="n">tokens</span>
 </pre></div>
@@ -399,21 +405,22 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [35]:</div>
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">this</span><span class="p">(</span><span class="n">Chain</span><span class="p">):</span> 
     <span class="n">_composer</span> <span class="o">=</span> <span class="n">ThisComposer</span><span class="p">()</span>
     
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain_type</span><span class="o">=</span><span class="n">_X</span><span class="p">):</span> <span class="k">return</span> <span class="n">chain_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
+    <span class="k">def</span> <span class="nf">chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain_type</span><span class="o">=</span><span class="n">_X</span><span class="p">):</span> 
+        <span class="k">return</span> <span class="n">chain_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
     
     <span class="k">def</span> <span class="nf">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
-        <span class="k">return</span> <span class="p">[</span><span class="s1">'f'</span><span class="p">,</span> <span class="s1">'value'</span><span class="p">,</span> <span class="s1">'chain'</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;chain&#39;</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -423,7 +430,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [36]:</div>
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">_X</span><span class="p">()</span>
@@ -439,7 +446,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="About-the-design">About the design<a class="anchor-link" href="#About-the-design">¶</a></h1><p>The goal of <code>Chain</code> is rapidly prototype code using powerful modules in the 
+<h1 id="About-the-design">About the design<a class="anchor-link" href="#About-the-design">&#182;</a></h1><p>The goal of <code>Chain</code> is rapidly prototype code using powerful modules in the 
 Python ecosystem.  More specifically, this was designed with the intent of 
 creating data rich web applications that may work client or server side.</p>
 <p>Applications are complex.  Fortunately, <code>conda</code> and <code>pip</code> provide lower 
@@ -447,24 +454,24 @@ barriers to entry for building complex systems.  With this access, it is
 possible to write functional code that spans loading through an ETL pipeline
 to an application.  This workflow was inspired greatly by <code>toolz</code> and chainable <code>d3</code>
 expressions.  Choosing these opinions greatly minimizes the need for naming.</p>
-<h2 id="Naming">Naming<a class="anchor-link" href="#Naming">¶</a></h2><p>Naming takes time and have the potential to confuse others.  The python ecosystem 
+<h2 id="Naming">Naming<a class="anchor-link" href="#Naming">&#182;</a></h2><p>Naming takes time and have the potential to confuse others.  The python ecosystem 
 provides a broad corpus to load, transform, model, and visualize data with simple
 methods to deploy them into applications or scale to other day.</p>
 <p>I don't want to name stuff.  Also, I want to write code quicker.  Using existing namespaces
 enhances code prediction while developing in the notebook.</p>
-<h2 id="Intent">Intent<a class="anchor-link" href="#Intent">¶</a></h2><ul>
+<h2 id="Intent">Intent<a class="anchor-link" href="#Intent">&#182;</a></h2><ul>
 <li>Design a lightweight class that offers a typographically and functionally compact python syntax.</li>
 <li>Maximize screen real estate for impact.  This optimizes copy and paste ability.</li>
 <li>Lazy.  Most of this comes from toolz.</li>
 <li>Reusability.</li>
 <li>Don't create a new grammar.</li>
 </ul>
-<h2 id="Advantages">Advantages<a class="anchor-link" href="#Advantages">¶</a></h2><ul>
+<h2 id="Advantages">Advantages<a class="anchor-link" href="#Advantages">&#182;</a></h2><ul>
 <li>Less decisions to make, better code prediction.</li>
 <li>Complex operations can be isolated to a notebook cell</li>
 <li>Enhanced copy and pasting abilities.</li>
 </ul>
-<h2 id="History">History<a class="anchor-link" href="#History">¶</a></h2><ol>
+<h2 id="History">History<a class="anchor-link" href="#History">&#182;</a></h2><ol>
 <li><p>Design an API that mimics <a href="http://underscorejs.org/#chain"><code>chain</code> from <code>underscorejs</code></a>.  This 
 includes the <code>value</code> function that evaluates that <code>chain</code>.  <code>Chain</code> could only use <code>builtins</code> and <code>toolz.curried</code>.</p>
 <div class="highlight"><pre><span></span><span class="n">Chain</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
@@ -492,4 +499,5 @@ using the attribute created a nice typographic layout.</p>
 </div>
     </div>
   </div>
-{% endraw %}
+</body>
+</html>

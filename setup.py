@@ -1,13 +1,14 @@
 from os.path import join, dirname
 import setuptools
 
+
 def read(fname):
     with open(join(dirname(__file__), fname)) as f:
         return f.read()
 
 setuptools.setup(
     name="whatever-forever",
-    version="0.0.15",
+    version="0.0.16",
     author="Tony Fast",
     author_email="tony.fast@gmail.com",
     description="prototype whatever in the Jupyter notebook",

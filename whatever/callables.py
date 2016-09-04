@@ -4,16 +4,19 @@
 # In[6]:
 
 from collections import OrderedDict
-from toolz.curried import curry, flip, identity, juxt, map, partial, pipe, valmap
+from toolz.curried import flip, juxt, map, partial, pipe, valmap
 from types import LambdaType
 from typing import Iterable, Any
 
-__all__ = ['Dispatch', 'DictCallable', 'TupleCallable', 'ListCallable', 'SetCallable']
+__all__ = [
+    'Dispatch', 'DictCallable', 'TupleCallable', 'ListCallable', 'SetCallable'
+]
 
 
 # In[4]:
 
 class DictCallable(dict):
+
     def __call__(self, *args, **kwargs):
         return valmap(
             lambda x: x(*args, **kwargs), self
@@ -23,17 +26,18 @@ class DictCallable(dict):
 # In[44]:
 
 class Condictional(OrderedDict):
-    """An object that provides multiple dispatch when it is called.
+    """First key to satisfy the key condition executes.
     """
-    def key(self, x, *args, **kwargs)->bool: 
+
+    def key(self, x, *args, **kwargs)->bool:
         return x(*args, **kwargs)
-    
+
     def __init__(self, args=[], default=None, key=None):
         super().__init__(args)
         self.default = default
         if key:
             self.key = key
-        
+
     def __call__(self, *args, **kwargs):
         for key, value in self.items():
             if self.key(key, *args, **kwargs):
@@ -48,6 +52,7 @@ class Condictional(OrderedDict):
 class Dispatch(Condictional):
     """An object that provides multiple dispatch when it is called.
     """
+
     def key(self, key, *args, **kwargs):
         if not isinstance(key, Iterable):
             key = tuple([key])
@@ -57,7 +62,7 @@ class Dispatch(Condictional):
                 if isinstance(types, Iterable) or types != Any
             )
         return False
-        
+
     def __init__(self, args=[], default=None):
         super().__init__(args)
         self.default = default
@@ -66,6 +71,7 @@ class Dispatch(Condictional):
 # In[5]:
 
 class ListCallable(list):
+
     def __call__(self, *args, **kwargs):
         return list(juxt(*self)(
             *args, **kwargs
@@ -75,10 +81,11 @@ class ListCallable(list):
 # In[6]:
 
 class SetCallable(set):
+
     def __call__(self, *args, **kwargs):
         if pipe(self, map(
                 partial(flip(isinstance), LambdaType)
-            ), any):
+        ), any):
             raise TypeError("Cannot interpolate a LambdaType.")
 
         return pipe(
@@ -86,14 +93,13 @@ class SetCallable(set):
                 self, list(map(lambda x: x(*args, **kwargs), self))
             ), list, dict
         )
-        
 
 
 # In[7]:
 
 class TupleCallable(tuple):
+
     def __call__(self, *args, **kwargs):
         return juxt(*self)(
             *args, **kwargs
         )
-

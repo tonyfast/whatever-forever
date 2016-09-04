@@ -11,9 +11,12 @@ tricks:
         - '*/.~*.ipynb'
         - '*/.ipynb_checkpoints*'
     shell_command: |
-        jupyter nbconvert --to script "${watch_src_path}" &&
-        py.test &&
         jupyter nbconvert --to html ${watch_src_path} --template=docs/_nbconvert/body.html --output-dir=docs/source/
+        jupyter nbconvert --to python "${watch_src_path}"  --template=docs/_nbconvert/python.tpl
+        autopep8 --recursive --in-place --verbose . &&
+        py.test --flake8
+
+
 
 
 # Only test the test
