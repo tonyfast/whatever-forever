@@ -1,6 +1,6 @@
 # From root:
 #
-# watchmedo tricks docs/_data/tricks.yaml
+# watchmedo tricks tricks.yaml
 
 tricks:
 # Compile the script and rerun tests.
@@ -15,9 +15,6 @@ tricks:
         jupyter nbconvert --to python "${watch_src_path}"  --template=docs/_nbconvert/python.tpl
         autopep8 --recursive --in-place --verbose . &&
         py.test --flake8
-
-
-
 
 # Only test the test
 - watchdog.tricks.ShellCommandTrick:
@@ -40,3 +37,9 @@ tricks:
     - "*/docs/test-readme.ipynb"
     shell_command: |
         jupyter nbconvert --to rst ${watch_src_path} --output=../readme.rst
+
+- watchdog.tricks.ShellCommandTrick:
+    patterns:
+    - "*/docs/test-index.ipynb"
+    shell_command: |
+        jupyter nbconvert --to html ${watch_src_path} --output=index.html --template=docs/_nbconvert/body.html
