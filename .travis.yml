@@ -1,0 +1,11 @@
+language: python
+python: 3.5
+deploy:
+  provider: pypi
+  user: tonyfast
+  password:
+    secure: gZ1qnkieOLSbFM15LVqWe3ecbdP/AjxGbPTGy/7ct4C+hmD9i/NRUkCCEDH0v8lak75wZQwUYSAkStEX17V9dtUa0+h8vqTD3Ku6Nr/iwH+uyU8bFoDEwaNncu4PtApUDT5kOuOINdTpFvzFTc6DfnouGzWG+4znvg22aXsBIzXCNmq0Dj/uwI0yOQdTZWQSlXsPAdkH320j6yfnbrTvzv9wPJ5NeNJSaoijTPFsWMwxL7cBeKCf1sQDZIq0UItX/VjK3mEPgPNv6v0Wa60E5jstjhAbpJMaPqxvPj3DFvwFX4mfuSo8k96f/a5dghGhpEW0wmhbMilX8HhJ+ypHnKWkS2slpFW9VueinZfVIt4V/T3/YqCRNMEd5axcKfWYTcrtfTjObvMKBGvhmtQvOoW3VUexX0pKeY/av5Qep09rkoUoAFmixuBIq8KxBlmVrKh80n4Hx+x2CiHQ0WZ7uA0KnZzmU06GMFcqfKaO1lJ0cefCbLgrpK54y+4ut5Ov9gWYGunbU9YcaF6w319s0miHdC++gavYZ5M3vTlW27IojaAHO1dV4dKKSKsXGYU2q4rlOcFApnk5dkcFB4ICG0KymqDoDoAq0JdlC3pB4/0dGZP4S0i9O6aZfWKfPDMVq1ooCBqhr2Dwc/b3kYbQ9kqovo9yV71SlaiYKT/wi4U=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: tonyfast/whatever-forever
