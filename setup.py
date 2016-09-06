@@ -8,7 +8,7 @@ def read(fname):
 
 setuptools.setup(
     name="whatever-forever",
-    version="0.1.1",
+    version="0.1.2",
     author="Tony Fast",
     author_email="tony.fast@gmail.com",
     description="prototype whatever in the Jupyter notebook",
