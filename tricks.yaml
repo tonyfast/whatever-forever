@@ -36,10 +36,12 @@ tricks:
     patterns:
     - "*/docs/test-readme.ipynb"
     shell_command: |
-        jupyter nbconvert --to rst ${watch_src_path} --output=../readme.rst
+        py.test ${watch_src_path} &&
+        jupyter nbconvert --to rst ${watch_src_path} --output=../readme.rst &&
+        jupyter nbconvert --to markdown ${watch_src_path} --output=../readme.md
 
 - watchdog.tricks.ShellCommandTrick:
     patterns:
-    - "*/docs/test-index.ipynb"
+    - "*/docs/index.ipynb"
     shell_command: |
         jupyter nbconvert --to html ${watch_src_path} --output=index.html --template=docs/_nbconvert/body.html

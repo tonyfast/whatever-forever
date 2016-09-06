@@ -1,45 +1,32 @@
 
-.. code:: python
-
-    from whatever import *
-    from toolz.curried import *
-
 ``whatever-forever``
 ====================
 
--  Syntactic sugar to build complex functions in Python; it's just a
-   class.
--  Multiple dispatching ``dict``\ s.
--  Stupid easy cell magics.
+A generalized declarative syntax for Python objects.
 
-Chaining
-========
+Installation
+------------
 
-``Chain`` and ``_X``
+``pip install whatever-forever``
+
+Basic Usage
+-----------
+
+Chain - declarative 
+~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
-    Chain(5).range.list
+    from whatever import *
+    my_chain = Chain(5).range.map(lambda x: x+3).list
+    my_chain
 
 
 
 
 .. parsed-literal::
 
-    [0, 1, 2, 3, 4]
-
-
-
-.. code:: python
-
-    _X(5) | range | list
-
-
-
-
-.. parsed-literal::
-
-    [0, 1, 2, 3, 4]
+    [3, 4, 5, 6, 7]
 
 
 
@@ -49,7 +36,7 @@ A random list
 .. code:: python
 
     from random import random
-    random_list = _X(5).range | map(lambda x: random()) > list
+    random_list = _X(5).range.map(lambda x: random()).list.value()
     str(random_list)
 
 
@@ -57,7 +44,7 @@ A random list
 
 .. parsed-literal::
 
-    '[0.9935285316596995, 0.014724817177512728, 0.8948846635050951, 0.8599661767263426, 0.2981499631390274]'
+    '[0.054198466781843035, 0.3460878567298823, 0.4675066659151689, 0.1821870800287837, 0.8590642257986899]'
 
 
 

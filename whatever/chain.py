@@ -1,30 +1,6 @@
 # coding: utf-8
 
-# It should be easier to construct complicated functions.  Python has named a
-# lot of things, and large scale adoption of certain libraries make names
-# meaningful.  `Chain` is inspired by `pytoolz` and `underscorejs`.  The
-# [`pytoolz` documentation does a fantastic describing functional
-# programming](toolz.readthedocs.io).
-#
-# There are a few functional programming tools in Python ecosystem.  I would up
-# breaking them
-# very quickly after trying them __Or__ the didn't work in the Jupyter
-# notebook.
-#
-# A `Chain` is efficient for prototyping and scaling complicated actions.
-#
-# A Chain class
-#
-# * composes functions.  `Chain` must be explicitly computed using `value` or
-# `>`
-# * has a special attribute `value`
-# * a `copy` method
-# * overloads `__or__` and `__gt__`
-#     * Provides semi-functional syntax for evaluation
-
-# The only required import is `toolz` from pypi
-
-# In[1]:
+# In[193]:
 
 from whatever.callables import (
     SetCallable, TupleCallable, ListCallable, DictCallable, Dispatch
@@ -33,49 +9,32 @@ import builtins
 import operator
 import toolz.curried
 from toolz.curried import (
-    compose, concat, filter,
-    first, flip, identity, juxt, map, partial,
-    peek, pipe, valfilter, keyfilter,
+    complement, compose, filter,
+    first, identity, juxt, map, partial,
+    peek, pipe, merge, last, second,
 )
 from typing import Any, Callable, Iterable
 
 __all__ = ['Chain', '_X', 'this', ]
 
 
-# ```python
-# Chain([1,2]).map(lambda x: x**2).list().value()
-# ```
-
-# In[2]:
-
-def import_functions(module):
-    return pipe(
-        module, dir, map(partial(getattr, module)),
-        filter(partial(flip(hasattr), '__name__')),
-    )
-
-
-# In[3]:
+# In[83]:
 
 def evaluate(args, kwargs, fn):
     return fn(*args, **kwargs)
 
 
 class DefaultComposer(object):
-    keyed_methods = pipe(
-        [toolz.curried, builtins, operator],
-        map(import_functions), concat,
-        map(juxt(partial(flip(getattr), '__name__'), identity)),
-        list, reversed, dict, keyfilter(
-            compose(str.islower, first)
-        ), valfilter(callable)
+    attrs = pipe(
+        [toolz.curried, builtins, operator], reversed,
+        map(vars), merge,
     )
 
     def item(self, item):
         return item
 
     def attr(self, item):
-        return self.keyed_methods.get(item)
+        return self.attrs.get(item)
 
     def call(self, tokens, *args, **kwargs):
         tokens[-1][1:] = args, kwargs
@@ -90,24 +49,12 @@ class DefaultComposer(object):
         ))
 
 
-# In[4]:
+# In[175]:
 
-class Repr(object):
-
-    def __repr__(self):
-        return self.value().__repr__()
-
-
-# In[38]:
-
-class Chain(Repr):
+class Chain(object):
     _composer = DefaultComposer()
 
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         # Tokens record function, arguments, and keywork arguments.
         self._tokens = []
 
@@ -180,39 +127,13 @@ class Chain(Repr):
         return self._composer.composer(self._tokens)
 
     def __dir__(self):
-        return concat([
-            self._composer.keyed_methods.keys(),
-            super().__dir__(),
-        ])
+        return self._composer.attrs.keys()
+
+    def __repr__(self):
+        return self.value().__repr__()
 
 
-# ```
-# XXXXXXXXXXXXXXXXXXXXXXXXXX
-# XXXXXXXChainXXXXXLinkXXXXX
-# XXXXXShorthandXXXXXXXXXXXX
-# XXXXXXXXXXXXXXXXXXXXXXXXXX
-# ```
-
-# > Copy the state of the chain and return a new one.
-
-# ##### Some sweet ol' syntactic sugar that looks like functional programming.
-#
-# > `__or__`
-#
-# >   * adds a piping method to a chain.  Any functional can be included in the
-# pipe.
-# >   * is shorthand for a copy and a an append.
-
-# > `this` is a modified chain that can access items and attributes.
-#
-# > Most frequently, the `f` or `value` must be called as a function closure.
-#
-# ```python
-# this().set_index('A').index.values.f
-# this().set_index('A')[['B', 'D']].f
-# ```
-
-# In[39]:
+# In[85]:
 
 class SugarComposer(DefaultComposer):
     multiple_dispatch = Dispatch([
@@ -227,14 +148,18 @@ class SugarComposer(DefaultComposer):
         return self.multiple_dispatch(item)
 
     def call(self, tokens, *args, **kwargs):
-        if tokens[-1][0] in [map]:
+        if pipe(tokens, last, first) is map:
             if kwargs and not args:
                 args = [kwargs]
-            return super().call(tokens, self.item(args[0]))
+            return super().call(
+                tokens, pipe(
+                    args, first, self.item,
+                ),
+            )
         return super().call(tokens, *args, **kwargs)
 
 
-# In[40]:
+# In[86]:
 
 def juxtapose(func, x):
     return juxt(*func)(x)
@@ -264,15 +189,19 @@ class _X(Chain):
     def __mul__(self, f):
         """Apply a map function.
         """
-        return self.copy().map(f)
+        return self.copy().map(
+            self._composer.item(f)
+        )
 
     def __add__(self, f):
         """Filter values that are true.
         """
-        return self.copy().filter(self._composer.item(f))
+        return self.copy().filter(
+            self._composer.item(f)
+        )
 
 
-# In[34]:
+# In[154]:
 
 def getitem(item, obj):
     return obj[item]
@@ -297,100 +226,43 @@ class ThisComposer(DefaultComposer):
         return tokens
 
 
-# In[35]:
+# In[201]:
 
-class this(Chain):
+class this(_X):
+    """Access attributes and items of an object.
+    """
     _composer = ThisComposer()
 
-    @property
-    def chain(self, chain_type=_X):
-        return chain_type(self.value())
+    def __init__(self, arg=None,):
+        """Accepts one input argument.
+        """
+        super().__init__(arg)
 
     @property
     def f(self):
         return self.value
 
+    @property
     def __dir__(self):
-        return ['f', 'value', 'chain']
+        return pipe(self._args, first).__dir__
 
+    def copy(self, klass=_X):
+        """A new chain beginning with the current chain tokens and argument.
+        """
+        chain = super().copy()
+        new_chain = klass(chain._args[0])
+        new_chain._tokens = [[
+            chain.compose, [], {},
+        ]]
+        return new_chain
 
-# In[36]:
-
-c = _X()
-
-
-# # About the design
-#
-# The goal of `Chain` is rapidly prototype code using powerful modules in the
-# Python ecosystem.  More specifically, this was designed with the intent of
-# creating data rich web applications that may work client or server side.
-#
-# Applications are complex.  Fortunately, `conda` and `pip` provide lower
-# barriers to entry for building complex systems.  With this access, it is
-# possible to write functional code that spans loading through an ETL pipeline
-# to an application.  This workflow was inspired greatly by `toolz` and
-# chainable `d3`
-# expressions.  Choosing these opinions greatly minimizes the need for naming.
-#
-# ## Naming
-#
-# Naming takes time and have the potential to confuse others.  The python
-# ecosystem
-# provides a broad corpus to load, transform, model, and visualize data with
-# simple
-# methods to deploy them into applications or scale to other day.
-#
-# I don't want to name stuff.  Also, I want to write code quicker.  Using
-# existing namespaces
-# enhances code prediction while developing in the notebook.
-#
-# ## Intent
-#
-# * Design a lightweight class that offers a typographically and functionally
-# compact python syntax.
-# * Maximize screen real estate for impact.  This optimizes copy and paste
-# ability.
-# * Lazy.  Most of this comes from toolz.
-# * Reusability.
-# * Don't create a new grammar.
-#
-# ## Advantages
-#
-# * Less decisions to make, better code prediction.
-# * Complex operations can be isolated to a notebook cell
-# * Enhanced copy and pasting abilities.
-#
-# ## History
-#
-# 1. Design an API that mimics [`chain` from
-# `underscorejs`](http://underscorejs.org/#chain).  This
-# includes the `value` function that evaluates that `chain`.  `Chain` could
-# only use `builtins` and `toolz.curried`.
-#
-#     ```python
-#     Chain([1,2,3]).map(lambda x: x**2).list()
-#     ```
-#
-#     `value` can take args and kwargs to apply a different context to the
-# functions.
-#
-#     ```python
-#     c = Chain([1,2,3]).map(lambda x: x**2).list()
-#     c.value([3,5,7])
-#     ```
-#
-# 2. Extend the API to functions in the global namespace using the
-# `__getitem__` method.  Chaining functions
-# using the attribute created a nice typographic layout.
-#
-#     ```python
-#     Chain([1,2,3])[
-#         map(lambda x: x**2)
-#     ].list()
-#     ```
-#
-# 3. Add syntactic sugar to extend and evaluate a chain.
-#
-#     __extend a chain__ `Chain([1,2,3]) | map(lambda x: x**2) | list`
-#
-#     __evaluate a chain__ `Chain([1,2,3]) | map(lambda x: x**2) > list`
+    def __repr__(self):
+        self._tokens = pipe(
+            self._tokens, filter(
+                compose(complement(
+                    lambda s: s.startswith('_ipython') or
+                        s.startswith('_repr') if isinstance(s, str) else s,
+                        ), first, second,)
+            ), list
+        )
+        return self.value().__repr__()
