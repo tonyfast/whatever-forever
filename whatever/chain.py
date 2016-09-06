@@ -1,11 +1,12 @@
 # coding: utf-8
 
-# In[193]:
+# In[212]:
 
 from whatever.callables import (
     SetCallable, TupleCallable, ListCallable, DictCallable, Dispatch
 )
 import builtins
+from joblib import Parallel, delayed
 import operator
 import toolz.curried
 from toolz.curried import (
@@ -15,7 +16,7 @@ from toolz.curried import (
 )
 from typing import Any, Callable, Iterable
 
-__all__ = ['Chain', '_X', 'this', ]
+__all__ = ['Chain', '_X', '_P', 'this', ]
 
 
 # In[83]:
@@ -266,3 +267,34 @@ class this(_X):
             ), list
         )
         return self.value().__repr__()
+
+
+# In[ ]:
+
+class ParallelComposer(SugarComposer):
+
+    def __init__(self, n_jobs=4):
+        self.n_jobs = n_jobs
+
+    def composer(self, tokens, **kwargs):
+        rekey = []
+        for i, token in enumerate(tokens):
+            token = [token]
+            if first(token[0]) is map:
+                token[0][1] = [
+                    delayed(token[0][1][0])
+                ]
+                token.append([
+                    Parallel(n_jobs=self.n_jobs), [], {}
+                ])
+            rekey.extend(token)
+        return super().composer(rekey)
+
+
+# In[ ]:
+
+class _P(_X):
+
+    def __init__(self, *args, n_jobs=4, **kwargs):
+        self._composer = ParallelComposer(n_jobs=n_jobs)
+        super().__init__(*args, **kwargs)

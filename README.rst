@@ -2,7 +2,8 @@
 ``whatever-forever``
 ====================
 
-A generalized declarative syntax for Python objects.
+Create reusable, higher-order functions using declarative syntaxes in
+Python.
 
 Installation
 ------------
@@ -12,8 +13,8 @@ Installation
 Basic Usage
 -----------
 
-Chain - declarative 
-~~~~~~~~~~~~~~~~~~~~
+Chaining in Python
+~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
@@ -44,9 +45,12 @@ A random list
 
 .. parsed-literal::
 
-    '[0.054198466781843035, 0.3460878567298823, 0.4675066659151689, 0.1821870800287837, 0.8590642257986899]'
+    '[0.9797835854505124, 0.7465362603228028, 0.9564821512434867, 0.25918443126809687, 0.8989533853121069]'
 
 
+
+Syntactic Sugar
+~~~~~~~~~~~~~~~
 
 .. code:: python
 
@@ -58,7 +62,7 @@ A random list
 
 .. parsed-literal::
 
-    ['0.99', '0.01', '0.89', '0.86', '0.30']
+    ['0.98', '0.75', '0.96', '0.26', '0.90']
 
 
 
@@ -75,36 +79,34 @@ A random list
 
 .. parsed-literal::
 
-    ['0.99', '0.89', '0.86']
+    ['0.98', '0.75', '0.96', '0.90']
 
 
-
-``magical``
------------
-
-Easy to construct cell magics
-
-Cell Magics
-~~~~~~~~~~~
-
-Create a ``jinja`` to Markdown magic.
-
-.. code:: python
-
-    from jinja2 import Template
-    @magical('jinja2', lang='jinja2', display='Markdown')
-    def render_jinja_with_globals(cell):
-        return Template(cell).render(**globals())
 
 Development
 -----------
 
-Running test and the docs server.
+Running the Build and Tests
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
+    pip install -r requirements-dev.txt
+    python setup.py develop
     watchmedo tricks tricks.yaml
+
+The ``watchmedo`` script will convert your notebooks to scripts and html
+files. ``py.test-ipynb`` will test all notebooks matching
+``test-*.ipynb``.
+
+Running the docs
+^^^^^^^^^^^^^^^^
+
+::
+
     jekyll serve docs -wit
+
+Docs are hosted at ``http://localhost:4000/whatever-forever/``.
 
 License
 -------
