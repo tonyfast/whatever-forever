@@ -12,11 +12,13 @@ layout: base
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
-<span class="kn">from</span> <span class="nn">toolz.curried</span> <span class="k">import</span> <span class="n">curry</span><span class="p">,</span> <span class="n">flip</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="n">juxt</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">pipe</span><span class="p">,</span> <span class="n">valmap</span>
+<span class="kn">from</span> <span class="nn">toolz.curried</span> <span class="k">import</span> <span class="n">flip</span><span class="p">,</span> <span class="n">juxt</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">pipe</span><span class="p">,</span> <span class="n">valmap</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">LambdaType</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Any</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Dispatch&#39;</span><span class="p">,</span> <span class="s1">&#39;DictCallable&#39;</span><span class="p">,</span> <span class="s1">&#39;TupleCallable&#39;</span><span class="p">,</span> <span class="s1">&#39;ListCallable&#39;</span><span class="p">,</span> <span class="s1">&#39;SetCallable&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Dispatch&#39;</span><span class="p">,</span> <span class="s1">&#39;DictCallable&#39;</span><span class="p">,</span> <span class="s1">&#39;TupleCallable&#39;</span><span class="p">,</span> <span class="s1">&#39;ListCallable&#39;</span><span class="p">,</span> <span class="s1">&#39;SetCallable&#39;</span>
+<span class="p">]</span>
 </pre></div>
 
 </div>
@@ -47,17 +49,17 @@ layout: base
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Condictional</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An object that provides multiple dispatch when it is called.</span>
+    <span class="sd">&quot;&quot;&quot;First key to satisfy the key condition executes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">bool</span><span class="p">:</span> 
+    <span class="k">def</span> <span class="nf">key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">x</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[],</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
         <span class="k">if</span> <span class="n">key</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
-        
+
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -89,7 +91,7 @@ layout: base
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">types</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">or</span> <span class="n">types</span> <span class="o">!=</span> <span class="n">Any</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span>
-        
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[],</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
@@ -126,7 +128,7 @@ layout: base
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span>
                 <span class="n">partial</span><span class="p">(</span><span class="n">flip</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">),</span> <span class="n">LambdaType</span><span class="p">)</span>
-            <span class="p">),</span> <span class="nb">any</span><span class="p">):</span>
+        <span class="p">),</span> <span class="nb">any</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Cannot interpolate a LambdaType.&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">pipe</span><span class="p">(</span>
@@ -134,7 +136,6 @@ layout: base
                 <span class="bp">self</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="bp">self</span><span class="p">))</span>
             <span class="p">),</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span>
         <span class="p">)</span>
-        
 </pre></div>
 
 </div>
@@ -162,4 +163,3 @@ layout: base
     </div>
   </div>
 </body>
-</html>
