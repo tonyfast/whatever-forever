@@ -8,7 +8,7 @@ layout: base
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[212]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">whatever.callables</span> <span class="k">import</span> <span class="p">(</span>
@@ -21,11 +21,11 @@ layout: base
 <span class="kn">from</span> <span class="nn">toolz.curried</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">complement</span><span class="p">,</span> <span class="n">compose</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> 
     <span class="n">first</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="n">juxt</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> 
-    <span class="n">peek</span><span class="p">,</span> <span class="n">pipe</span><span class="p">,</span> <span class="n">merge</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span>
+    <span class="n">peek</span><span class="p">,</span> <span class="n">pipe</span><span class="p">,</span> <span class="n">merge</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">valfilter</span><span class="p">,</span> <span class="n">keyfilter</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Chain&#39;</span><span class="p">,</span> <span class="s1">&#39;_X&#39;</span><span class="p">,</span> <span class="s1">&#39;_P&#39;</span><span class="p">,</span> <span class="s1">&#39;this&#39;</span><span class="p">,]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;chain&#39;</span><span class="p">,</span> <span class="s1">&#39;Chain&#39;</span><span class="p">,</span> <span class="s1">&#39;_x&#39;</span><span class="p">,</span> <span class="s1">&#39;__x&#39;</span><span class="p">,</span> <span class="s1">&#39;__p&#39;</span><span class="p">,</span> <span class="s1">&#39;_this&#39;</span><span class="p">,</span> <span class="s1">&#39;compose&#39;</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -35,18 +35,34 @@ layout: base
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[83]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Evaluates `fn` with the `args` and `kwargs` as unique arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">DefaultComposer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="n">attrs</span> <span class="o">=</span> <span class="n">pipe</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">toolz</span><span class="o">.</span><span class="n">curried</span><span class="p">,</span> <span class="n">builtins</span><span class="p">,</span> <span class="n">operator</span><span class="p">],</span> <span class="nb">reversed</span><span class="p">,</span>
-        <span class="nb">map</span><span class="p">(</span><span class="nb">vars</span><span class="p">),</span> <span class="n">merge</span><span class="p">,</span>
-    <span class="p">)</span>
+<span class="k">class</span> <span class="nc">ComposerBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">pipe</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imports</span>
+            <span class="p">,</span> <span class="nb">reversed</span><span class="p">,</span>
+            <span class="nb">map</span><span class="p">(</span><span class="nb">vars</span><span class="p">),</span> <span class="n">merge</span><span class="p">,</span> <span class="n">keyfilter</span><span class="p">(</span>
+                <span class="n">compose</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">islower</span><span class="p">,</span> <span class="n">first</span><span class="p">),</span>
+            <span class="p">),</span><span class="n">valfilter</span><span class="p">(</span><span class="n">callable</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            
+        <span class="p">)</span>
     
+<span class="k">class</span> <span class="nc">DefaultComposer</span><span class="p">(</span><span class="n">ComposerBase</span><span class="p">):</span>
+    <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">toolz</span><span class="o">.</span><span class="n">curried</span><span class="p">,</span> <span class="n">builtins</span><span class="p">,</span> <span class="n">operator</span>
+    <span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">item</span>
     
@@ -60,7 +76,8 @@ layout: base
     <span class="k">def</span> <span class="nf">composer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">compose</span><span class="p">(</span><span class="o">*</span><span class="n">pipe</span><span class="p">(</span>
             <span class="n">tokens</span><span class="p">,</span> <span class="nb">reversed</span><span class="p">,</span> <span class="nb">filter</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="nb">map</span><span class="p">(</span>
-                <span class="k">lambda</span> <span class="n">arg</span><span class="p">:</span> <span class="n">partial</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="n">arg</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">arg</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">else</span> <span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">lambda</span> <span class="n">arg</span><span class="p">:</span> <span class="n">partial</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="n">arg</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">arg</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> 
+                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">else</span> <span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="p">),</span> <span class="nb">list</span>
         <span class="p">))</span>
 </pre></div>
@@ -72,38 +89,17 @@ layout: base
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[175]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Chain</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span> 
-    <span class="n">_composer</span> <span class="o">=</span> <span class="n">DefaultComposer</span><span class="p">()</span>
-        
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  
-        <span class="c1"># Tokens record function, arguments, and keywork arguments.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tokens</span> <span class="o">=</span> <span class="p">[]</span>
-        
-        <span class="c1"># Default context to evaluate the chain.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
-        
-    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Compose and evaluate the function.  If no args or kwargs are provided</span>
-<span class="sd">        then the initialized context is used.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_composer</span><span class="o">.</span><span class="n">composer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tokens</span><span class="p">)</span>
-        
-        <span class="c1"># If any new arguments have been supplied then use them</span>
-        <span class="k">if</span> <span class="n">args</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="p">:</span> 
-            <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        
-        <span class="c1"># If there are default kwargs</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
-        
-        <span class="c1"># If there is a context</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">:</span> 
-            <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="kc">None</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">ChainBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>                
+        <span class="c1"># If any new arguments have been supplied then use them        </span>
+        <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__dir__</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dir</span>
     
     <span class="k">def</span> <span class="nf">_tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">composer</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">composer</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
@@ -114,7 +110,36 @@ layout: base
         <span class="p">):</span>
             <span class="k">return</span> <span class="n">attr</span>
         <span class="k">return</span> <span class="p">[[</span><span class="n">attr</span><span class="p">,</span> <span class="p">[],</span> <span class="p">()]]</span>
+</pre></div>
 
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Chain</span><span class="p">(</span><span class="n">ChainBase</span><span class="p">):</span> 
+    <span class="n">_composer</span> <span class="o">=</span> <span class="n">DefaultComposer</span><span class="p">()</span>
+    <span class="n">_dir</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>        
+        <span class="c1"># Tokens record function, arguments, and keywork arguments.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tokens</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># Default context to evaluate the chain.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
+                
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Compose and evaluate the function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compose</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+            
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Apply the attribute getter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -141,7 +166,9 @@ layout: base
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">klass</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a new instance of the current chain.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">chain</span> <span class="o">=</span> <span class="p">(</span><span class="n">klass</span> <span class="k">if</span> <span class="n">klass</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">)(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
+        <span class="n">chain</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">klass</span> <span class="k">if</span> <span class="n">klass</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span>
+        <span class="p">)(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
         <span class="n">chain</span><span class="o">.</span><span class="n">_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tokens</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">chain</span>
     
@@ -150,10 +177,8 @@ layout: base
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_composer</span><span class="o">.</span><span class="n">composer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tokens</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_composer</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-    
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="o">.</span><span class="n">__repr__</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__dir__</span><span class="p">()</span> \
+            <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_composer</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 </pre></div>
 
 </div>
@@ -163,7 +188,30 @@ layout: base
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[85]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">chain</span><span class="p">(</span><span class="n">Chain</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+                <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">__repr__</span><span class="p">()</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compose</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">first</span><span class="p">),</span>
+            <span class="n">func</span><span class="o">.</span><span class="n">funcs</span><span class="o">.</span><span class="n">__repr__</span><span class="p">(),</span>
+        <span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">SugarComposer</span><span class="p">(</span><span class="n">DefaultComposer</span><span class="p">):</span>    
@@ -197,33 +245,58 @@ layout: base
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[86]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">LiterateAPI</span><span class="p">(</span><span class="n">chain</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">_len</span> <span class="o">=</span> <span class="n">pipe</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+            <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">isalnum</span><span class="p">),</span>
+            <span class="nb">list</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="o">*</span><span class="n">_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">juxtapose</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span> 
     <span class="k">return</span> <span class="n">juxt</span><span class="p">(</span><span class="o">*</span><span class="n">func</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">_X</span><span class="p">(</span><span class="n">Chain</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Shorthand for `Chain` where `_X.f is Chain.value`.  Typographically dense.</span>
+<span class="k">class</span> <span class="nc">_x</span><span class="p">(</span><span class="n">LiterateAPI</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Initialize a chain delimited with single underscores.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_composer</span> <span class="o">=</span> <span class="n">SugarComposer</span><span class="p">()</span>
-    
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Callable</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
-    
+        
     <span class="k">def</span> <span class="nf">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Extend the current chain.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()[</span><span class="n">f</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">[</span><span class="n">compose</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Extend and evaluate the chain.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="n">compose</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="n">compose</span><span class="p">:</span>
+            <span class="c1"># return toolz.compose</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compose</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()[</span><span class="n">f</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()[</span><span class="n">f</span><span class="p">]</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
     
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">args</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Apply a map function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -246,7 +319,24 @@ layout: base
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[154]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">__x</span><span class="p">(</span><span class="n">_x</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+            <span class="s2">&quot;Compose this function using a dunder - __&quot;</span>
+        <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getitem</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span> 
@@ -276,11 +366,12 @@ layout: base
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[201]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">this</span><span class="p">(</span><span class="n">_X</span><span class="p">):</span> 
-    <span class="sd">&quot;&quot;&quot;Access attributes and items of an object.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">_this</span><span class="p">(</span><span class="n">_x</span><span class="p">):</span> 
+    <span class="sd">&quot;&quot;&quot;A chain object to access attributes and items.   Converts to </span>
+<span class="sd">    a chain when copied</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_composer</span> <span class="o">=</span> <span class="n">ThisComposer</span><span class="p">()</span>
     
@@ -290,14 +381,10 @@ layout: base
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
     
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
-    
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
-        <span class="k">return</span> <span class="n">pipe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="n">first</span><span class="p">)</span><span class="o">.</span><span class="n">__dir__</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__dir__</span><span class="p">()</span> <span class="o">+</span> <span class="n">pipe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="n">first</span><span class="p">)</span><span class="o">.</span><span class="n">__dir__</span>
     
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">klass</span><span class="o">=</span><span class="n">_X</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">klass</span><span class="o">=</span><span class="n">_x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A new chain beginning with the current chain tokens and argument.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">chain</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -316,7 +403,7 @@ layout: base
                 <span class="p">),</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,)</span>
             <span class="p">),</span> <span class="nb">list</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="o">.</span><span class="n">__repr__</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__repr__</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -326,7 +413,7 @@ layout: base
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">ParallelComposer</span><span class="p">(</span><span class="n">SugarComposer</span><span class="p">):</span>
@@ -355,12 +442,14 @@ layout: base
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">_P</span><span class="p">(</span><span class="n">_X</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_composer</span> <span class="o">=</span> <span class="n">ParallelComposer</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">__p</span><span class="p">(</span><span class="n">__x</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_composer</span> <span class="o">=</span> <span class="n">ParallelComposer</span><span class="p">(</span>
+            <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span>
+        <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 

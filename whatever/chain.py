@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# In[212]:
+# In[1]:
 
 from whatever.callables import (
     SetCallable, TupleCallable, ListCallable, DictCallable, Dispatch
@@ -12,24 +12,41 @@ import toolz.curried
 from toolz.curried import (
     complement, compose, filter,
     first, identity, juxt, map, partial,
-    peek, pipe, merge, last, second,
+    peek, pipe, merge, last, second, valfilter, keyfilter
 )
 from typing import Any, Callable, Iterable
 
-__all__ = ['Chain', '_X', '_P', 'this', ]
+__all__ = ['chain', 'Chain', '_x', '__x', '__p', '_this', 'compose']
 
 
-# In[83]:
+# In[2]:
 
 def evaluate(args, kwargs, fn):
+    """Evaluates `fn` with the `args` and `kwargs` as unique arguments.
+    """
     return fn(*args, **kwargs)
 
 
-class DefaultComposer(object):
-    attrs = pipe(
-        [toolz.curried, builtins, operator], reversed,
-        map(vars), merge,
-    )
+class ComposerBase(object):
+
+    def __init__(
+        self, **kwargs
+    ):
+        self.attrs = pipe(
+            self.imports, reversed,
+            map(vars), merge, keyfilter(
+                compose(str.islower, first),
+            ), valfilter(callable),
+        )
+        self.attrs.update(
+
+        )
+
+
+class DefaultComposer(ComposerBase):
+    imports = [
+        toolz.curried, builtins, operator
+    ]
 
     def item(self, item):
         return item
@@ -44,43 +61,22 @@ class DefaultComposer(object):
     def composer(self, tokens):
         return compose(*pipe(
             tokens, reversed, filter(first), map(
-                lambda arg: partial(arg[0], *arg[1], **
-                                    arg[2]) if any(arg[1:]) else arg[0]
+                lambda arg: partial(arg[0], *arg[1], **arg[2])
+                if any(arg[1:]) else arg[0]
             ), list
         ))
 
 
-# In[175]:
+# In[3]:
 
-class Chain(object):
-    _composer = DefaultComposer()
+class ChainBase(object):
 
-    def __init__(self, *args, **kwargs):
-        # Tokens record function, arguments, and keywork arguments.
-        self._tokens = []
-
-        # Default context to evaluate the chain.
-        self._args, self._kwargs = args, kwargs
-
-    def value(self, *args, **kwargs)->[Any, None]:
-        """Compose and evaluate the function.  If no args or kwargs are provided
-        then the initialized context is used.
-        """
-        fn = self._composer.composer(self._tokens)
-
+    def compute(self, fn, *args, **kwargs):
         # If any new arguments have been supplied then use them
-        if args or kwargs:
-            return fn(*args, **kwargs)
+        return fn(*args, **kwargs)
 
-        # If there are default kwargs
-        if self._kwargs:
-            return fn(*self._args, **self._kwargs)
-
-        # If there is a context
-        if self._args:
-            return fn(*self._args)
-
-        return None
+    def __dir__(self):
+        return super().__dir__() + self._dir
 
     def _tokenize(self, composer, attr):
         attr = composer(attr)
@@ -91,6 +87,27 @@ class Chain(object):
         ):
             return attr
         return [[attr, [], ()]]
+
+
+# In[4]:
+
+class Chain(ChainBase):
+    _composer = DefaultComposer()
+    _dir = []
+
+    def __init__(self, *args, **kwargs):
+        # Tokens record function, arguments, and keywork arguments.
+        self._tokens = []
+
+        # Default context to evaluate the chain.
+        self._args, self._kwargs = args, kwargs
+
+    def compute(self, *args, **kwargs)->[Any, None]:
+        """Compose and evaluate the function.
+        """
+        return super().compute(
+            self.compose, *args, **kwargs
+        )
 
     def __getattr__(self, attr):
         """Apply the attribute getter
@@ -118,8 +135,9 @@ class Chain(object):
     def copy(self, klass=None):
         """Create a new instance of the current chain.
         """
-        chain = (klass if klass else self.__class__)(
-            *self._args, **self._kwargs)
+        chain = (
+            klass if klass else self.__class__
+        )(*self._args, **self._kwargs)
         chain._tokens = self._tokens.copy()
         return chain
 
@@ -128,13 +146,26 @@ class Chain(object):
         return self._composer.composer(self._tokens)
 
     def __dir__(self):
-        return self._composer.attrs.keys()
+        return super().__dir__() + list(self._composer.attrs.keys())
+
+
+# In[5]:
+
+class chain(Chain):
 
     def __repr__(self):
-        return self.value().__repr__()
+        if self._args or self._kwargs:
+            return self.compute(
+                *self._args, **self._kwargs,
+            ).__repr__()
+        func = self.compose
+        return '\n'.join([
+            str(func.first),
+            func.funcs.__repr__(),
+        ])
 
 
-# In[85]:
+# In[6]:
 
 class SugarComposer(DefaultComposer):
     multiple_dispatch = Dispatch([
@@ -160,32 +191,50 @@ class SugarComposer(DefaultComposer):
         return super().call(tokens, *args, **kwargs)
 
 
-# In[86]:
+# In[7]:
+
+class LiterateAPI(chain):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        _len = pipe(
+            self.__class__.__name__,
+            map(str.isalnum),
+            list,
+            lambda x: x.index(True),
+        )
+        setattr(self, '_' * _len, self.compute)
+
+
+# In[8]:
 
 def juxtapose(func, x):
     return juxt(*func)(x)
 
 
-class _X(Chain):
-    """Shorthand for `Chain` where `_X.f is Chain.value`.  Typographically dense.
+class _x(LiterateAPI):
+    """Initialize a chain delimited with single underscores.
     """
     _composer = SugarComposer()
-
-    @property
-    def f(self)->Callable:
-        return self.value
 
     def __or__(self, f):
         """Extend the current chain.
         """
         return self.copy()[f]
 
-    def __gt__(self, f)->Any:
+    def __gt__(self, f)->[compose, Any]:
         """Extend and evaluate the chain.
         """
         if f is compose:
+            # return toolz.compose
             return self.compose
-        return self.copy()[f].value()
+
+        return self.copy()[f].compute()
+
+    def compute(self, *args, **kwargs):
+        if not(args or kwargs):
+            args, kwargs = self._args, self._kwargs
+        return super().compute(*args, **kwargs)
 
     def __mul__(self, f):
         """Apply a map function.
@@ -202,7 +251,17 @@ class _X(Chain):
         )
 
 
-# In[154]:
+# In[9]:
+
+class __x(_x):
+
+    def _(self, *args, **kwargs):
+        raise AttributeError(
+            "Compose this function using a dunder - __"
+        )
+
+
+# In[10]:
 
 def getitem(item, obj):
     return obj[item]
@@ -227,10 +286,11 @@ class ThisComposer(DefaultComposer):
         return tokens
 
 
-# In[201]:
+# In[11]:
 
-class this(_X):
-    """Access attributes and items of an object.
+class _this(_x):
+    """A chain object to access attributes and items.   Converts to 
+    a chain when copied
     """
     _composer = ThisComposer()
 
@@ -240,14 +300,10 @@ class this(_X):
         super().__init__(arg)
 
     @property
-    def f(self):
-        return self.value
-
-    @property
     def __dir__(self):
-        return pipe(self._args, first).__dir__
+        return super().__dir__() + pipe(self._args, first).__dir__
 
-    def copy(self, klass=_X):
+    def copy(self, klass=_x):
         """A new chain beginning with the current chain tokens and argument.
         """
         chain = super().copy()
@@ -266,10 +322,10 @@ class this(_X):
                         ), first, second,)
             ), list
         )
-        return self.value().__repr__()
+        return super().__repr__()
 
 
-# In[ ]:
+# In[12]:
 
 class ParallelComposer(SugarComposer):
 
@@ -291,10 +347,12 @@ class ParallelComposer(SugarComposer):
         return super().composer(rekey)
 
 
-# In[ ]:
+# In[13]:
 
-class _P(_X):
+class __p(__x):
 
-    def __init__(self, *args, n_jobs=4, **kwargs):
-        self._composer = ParallelComposer(n_jobs=n_jobs)
+    def __init__(self, *args, n_jobs=1, **kwargs):
+        self._composer = ParallelComposer(
+            n_jobs=n_jobs
+        )
         super().__init__(*args, **kwargs)
