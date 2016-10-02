@@ -1,3 +1,4 @@
+
 ``whatever-forever``
 ====================
 
@@ -18,8 +19,8 @@ Chaining in Python
 .. code:: python
 
     from whatever import *
-    my_chain = Chain(5).range.map(lambda x: x+3).list
-    my_chain
+    __my_chain = __x(5).range.map(lambda x: x+3).list
+    __my_chain
 
 
 
@@ -36,15 +37,15 @@ A random list
 .. code:: python
 
     from random import random
-    random_list = _X(5).range.map(lambda x: random()).list.value()
-    str(random_list)
+    __random_list = __x(5).range.map(lambda x: random()).list.value()
+    str(__random_list)
 
 
 
 
 .. parsed-literal::
 
-    '[0.9797835854505124, 0.7465362603228028, 0.9564821512434867, 0.25918443126809687, 0.8989533853121069]'
+    '[0.10095399022711649, 0.8604968925166636, 0.008445535846122287, 0.6610363926991931, 0.6330613356373495]'
 
 
 
@@ -54,21 +55,21 @@ Syntactic Sugar
 .. code:: python
 
     from random import random
-    _X(random_list) * (lambda s: '%3.2f' % s) | list
+    __x(__random_list.__()) * (lambda s: '%3.2f' % s) | list
 
 
 
 
 .. parsed-literal::
 
-    ['0.98', '0.75', '0.96', '0.26', '0.90']
+    ['0.08', '0.06', '0.33', '0.89', '0.71']
 
 
 
 .. code:: python
 
     from random import random
-    ((_X(random_list) + (lambda x: x >.5) )
+    ((__x(__random_list.__()) + (lambda x: x >.5) )
      * (lambda s: '%3.2f' % s) 
      | list
     )
@@ -78,7 +79,7 @@ Syntactic Sugar
 
 .. parsed-literal::
 
-    ['0.98', '0.75', '0.96', '0.90']
+    ['0.80', '0.63', '0.80', '0.64']
 
 
 
@@ -113,3 +114,4 @@ License
 ``whatever-forever`` is released as free software under the `BSD
 3-Clause
 license <https://github.com/tonyfast/whatever-forever/blob/master/LICENSE>`__.
+
